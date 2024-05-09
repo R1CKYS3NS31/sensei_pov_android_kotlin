@@ -13,7 +13,6 @@ data class UserAccountEntity(
     val lastName: String? = null,
     @PrimaryKey
     val email: String,
-    val password: String,
     @ColumnInfo("photo_url")
     val photoUrl: String? = null,
     val createdAt: String,

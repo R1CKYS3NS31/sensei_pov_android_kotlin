@@ -7,14 +7,19 @@ import kotlinx.serialization.Serializable
 data class UserAccountRemoteModel(
     @SerialName("_id")
     val id: String,
-    val firstName: String? = null,
-    val lastName: String? = null,
+    val name: Name,
     val email: String,
     val password: String,
     @SerialName("photo_url")
     val photoUrl: String? = null,
     val createdAt: String,
     val updatedAt: String
+)
+
+@Serializable
+data class Name(
+    val first: String? = null,
+    val last: String? = null
 )
 
 @Serializable
@@ -25,8 +30,7 @@ data class AuthResponseModel(
 
 @Serializable
 data class UserAccountSignUpRemoteModel(
-    val firstName: String?,
-    val lastName: String?,
+    val name: Name,
     val email: String,
     val password: String
 )
