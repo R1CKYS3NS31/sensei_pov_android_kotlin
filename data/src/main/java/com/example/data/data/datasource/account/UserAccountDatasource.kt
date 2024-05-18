@@ -1,7 +1,7 @@
 package com.example.data.data.datasource.account
 
 import android.util.Log
-import com.example.data.common.dispatcher.Dispatchers
+import com.example.data.common.dispatcher.Dispatcher
 import com.example.data.common.dispatcher.PoVDispatchers
 import com.example.data.common.result.ErrorResponse
 import com.example.data.common.result.PoVResult
@@ -39,7 +39,7 @@ const val TAG = "UserAccountDatasource"
 class UserAccountDatasource @Inject constructor(
     private val userAccountDao: UserAccountDao, // local datasource
     private val userAccountApiService: UserAccountApiService, // remote datasource
-    @Dispatchers(PoVDispatchers.IO)
+    @Dispatcher(PoVDispatchers.IO)
     private val dispatcher: CoroutineDispatcher,
     @ApplicationContext
     private val applicationCoroutineScope: CoroutineScope,

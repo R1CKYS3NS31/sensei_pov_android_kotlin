@@ -10,6 +10,6 @@ enum class PoVDispatchers {
 
 @Qualifier
 @Retention(RUNTIME)
-annotation class Dispatchers(
+annotation class Dispatcher(
     val povDispatchers: PoVDispatchers
 )
