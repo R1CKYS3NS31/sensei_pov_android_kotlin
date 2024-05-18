@@ -119,15 +119,15 @@ class UserAccountDatasource @Inject constructor(
     override suspend fun signIn(userAccountSignIn: UserAccountSignIn): Flow<PoVResult<UserAccount>> =
         flow {
             emit(PoVResult.Loading)
-            flowOf(userAccountApiService.signIn(userAccountSignIn.asRemoteModel())).map { response ->
+            flowOf(userAccountApiService.signIn(userAccountSignIn.asRemoteModel())).asPoVResult().map { response ->
                 when (response) {
                     is PoVResult.Success -> {
-                        val userAccountRemoteModel = response.userAccountRemoteModel
+                        val userAccountRemoteModel = response.data.userAccountRemoteModel
                         response.let {
                             saveUserAccountToDatastore(
-                                id = it.userAccountRemoteModel.id,
-                                password = it.userAccountRemoteModel.password,
-                                token = it.token
+                                id = it.data.userAccountRemoteModel.id,
+                                password = it.data.userAccountRemoteModel.password,
+                                token = it.data.token
                             )
 //                        authInterceptorRepository.updateToken(it.token)
                         }
