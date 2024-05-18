@@ -3,6 +3,7 @@ package com.example.data.data.datasource.account
 import android.util.Log
 import com.example.data.common.dispatcher.Dispatchers
 import com.example.data.common.dispatcher.PoVDispatchers
+import com.example.data.common.result.ErrorResponse
 import com.example.data.common.result.PoVResult
 import com.example.data.common.result.asPoVError
 import com.example.data.common.result.asPoVResult
@@ -15,6 +16,7 @@ import com.example.data.data.model.account.asUserAccount
 import com.example.data.data.repository.account.UserAccountRepository
 import com.example.datastore.UserAccountPreferencesRepository
 import com.example.local.dao.account.UserAccountDao
+import com.example.local.entity.account.UserAccountEntity
 import com.example.remote.api.account.UserAccountApiService
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -61,7 +64,9 @@ class UserAccountDatasource @Inject constructor(
         )
 
     override fun getAllUserAccounts(): Flow<PoVResult<List<UserAccount>>> {
-        TODO("Not yet implemented")
+        return userAccountDao.getAllUserAccounts().map {
+            it.map(UserAccountEntity::asUserAccount)
+        }.asPoVResult()
     }
 
     override suspend fun getUserCredentials(): Flow<Pair<String?, String?>> =
@@ -183,16 +188,99 @@ class UserAccountDatasource @Inject constructor(
     }.catch { it.asPoVError() }
         .flowOn(dispatcher)
 
-    override suspend fun getUserAccount(userAccountId: String): Flow<PoVResult<UserAccount>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getUserAccount(userAccountId: String): Flow<PoVResult<UserAccount>> =
+        flow {
+            emit(PoVResult.Loading)
+
+            userAccountDao.getUserAccount(id = userAccountId).asPoVResult()
+                .map { response ->
+                    when (response) {
+                        is PoVResult.Success -> {
+                            val userAccountEntity = response.data
+                            if (userAccountEntity.email.isNotBlank()) {
+                                emit(PoVResult.Success(userAccountEntity.asUserAccount()))
+                            }
+                        }
+
+                        is PoVResult.Error -> {
+                            emit(
+                                PoVResult.Error(
+                                    throwable = response.throwable,
+                                    responseErrorMessage = response.responseErrorMessage
+                                )
+                            )
+                        }
+
+                        is PoVResult.Loading -> {
+                            emit(PoVResult.Loading)
+                        }
+                    }
+                }
+        }
 
     override suspend fun updateUserAccount(userAccount: UserAccount): Flow<PoVResult<UserAccount>> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(PoVResult.Loading)
+            val userAuthToken = authToken.map {
+                it
+            }.first()
+            if (userAuthToken?.isNotBlank() == true) {
+                flowOf(
+                    userAccountApiService.updateUserAccount(
+                        userAccount.asRemoteModel()
+                    )
+                ).asPoVResult().map { response ->
+                    when (response) {
+                        is PoVResult.Success -> {
+                            userAccountDao.updateUserAccount(
+                                response.data.asEntity()
+                            )
+                            emit(PoVResult.Success(response.data.asUserAccount()))
+                        }
+
+                        is PoVResult.Error -> {
+                            emit(
+                                PoVResult.Error(
+                                    throwable = response.throwable,
+                                    responseErrorMessage = response.responseErrorMessage
+                                )
+                            )
+                        }
+
+                        is PoVResult.Loading -> emit(PoVResult.Loading)
+                    }
+                }.collect()
+                userAccountDao.updateUserAccount(userAccount.asEntity())
+                userAccountDao.getUserAccount(userAccount.id).asPoVResult()
+            } else {
+                emit(
+                    PoVResult.Error(
+                        responseErrorMessage = ErrorResponse(
+                            errorCode = 401,
+                            errorMessage = "unauthorized - please sign in"
+                        )
+                    )
+                )
+            }
+        }.catch {
+            emit(it.asPoVError())
+        }.flowOn(dispatcher)
     }
 
     override suspend fun deleteUserAccount(userAccount: UserAccount): Flow<PoVResult<Unit>> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(PoVResult.Loading)
+            val userAuthToken = authToken.map { it }.first()
+
+            if (userAuthToken?.isNotBlank() == true) {
+
+                /* remove user account from room*/
+                userAccountDao.deleteUserAccount(userAccountEntity = userAccount.asEntity())
+                emit(PoVResult.Success(Unit))
+            }
+        }.catch {
+            emit(it.asPoVError())
+        }.flowOn(dispatcher)
     }
 
     companion object {
