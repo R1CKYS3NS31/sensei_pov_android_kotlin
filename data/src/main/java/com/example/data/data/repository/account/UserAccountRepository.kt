@@ -8,11 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
 interface UserAccountRepository {
-    val authToken: StateFlow<String>
+    val authToken: StateFlow<String?>
     //    val isOnline: StateFlow<Boolean>
     //    val userCredentials: StateFlow<Pair<String?, String?>>
     fun getAllUserAccounts(): Flow<PoVResult<List<UserAccount>>>
-    suspend fun getUserCredentials(): Flow<Pair<String, String>>
+    suspend fun getUserCredentials(): Flow<Pair<String?, String?>>
     suspend fun signUp(userAccountSignUp: UserAccountSignUp): Flow<PoVResult<UserAccount>>
     suspend fun signIn(userAccountSignIn: UserAccountSignIn): Flow<PoVResult<UserAccount>>
     suspend fun signOut(userAccount: UserAccount): Flow<PoVResult<Unit>>
