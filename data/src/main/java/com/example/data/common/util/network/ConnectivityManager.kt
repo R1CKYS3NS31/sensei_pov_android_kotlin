@@ -33,7 +33,7 @@ class ConnectivityManagerNetworkMonitor @Inject constructor(
             }
 
             override fun onLost(network: Network) {
-                networks += network
+                networks -= network
                 channel.trySend(networks.isNotEmpty())
             }
         }
