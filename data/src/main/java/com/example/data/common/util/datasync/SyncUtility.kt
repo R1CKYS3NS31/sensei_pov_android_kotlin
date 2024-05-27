@@ -32,8 +32,8 @@ suspend fun <T> Synchronizer.dataSynchronizer(
     remoteData: Set<T>,
     localData: Set<T>,
     localModelUpdater: suspend (T) -> Unit,
-    remoteModelUpdater: suspend (T) -> Unit,
-    remoteModelDeleter: suspend (T) -> Unit
+    remoteModelUpdater: suspend (T) -> Unit = {},
+    remoteModelDeleter: suspend (T) -> Unit = {}
 ) = suspendRunCatching {
     val addToLocal = remoteData - localData
     val updateToLocal = localData.intersect(remoteData)

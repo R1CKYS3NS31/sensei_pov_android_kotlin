@@ -7,6 +7,7 @@ import com.example.data.common.result.ErrorResponse
 import com.example.data.common.result.PoVResult
 import com.example.data.common.result.asPoVError
 import com.example.data.common.result.asPoVResult
+import com.example.data.common.util.datasync.Synchronizer
 import com.example.data.data.model.account.UserAccount
 import com.example.data.data.model.account.UserAccountSignIn
 import com.example.data.data.model.account.UserAccountSignUp
@@ -294,5 +295,9 @@ class UserAccountDatasource @Inject constructor(
     ) {
         userAccountPreferencesRepository.saveUserAccountCredential(id, password)
         userAccountPreferencesRepository.saveToken(token)
+    }
+
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
+        TODO("Not yet implemented")
     }
 }

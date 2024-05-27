@@ -1,13 +1,14 @@
 package com.example.data.data.repository.account
 
 import com.example.data.common.result.PoVResult
+import com.example.data.common.util.datasync.Syncable
 import com.example.data.data.model.account.UserAccount
 import com.example.data.data.model.account.UserAccountSignIn
 import com.example.data.data.model.account.UserAccountSignUp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-interface UserAccountRepository {
+interface UserAccountRepository : Syncable{
     val authToken: StateFlow<String?>
     //    val isOnline: StateFlow<Boolean>
     //    val userCredentials: StateFlow<Pair<String?, String?>>

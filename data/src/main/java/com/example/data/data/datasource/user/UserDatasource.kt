@@ -7,6 +7,8 @@ import com.example.data.common.dispatcher.di.ApplicationScope
 import com.example.data.common.result.PoVResult
 import com.example.data.common.result.asPoVError
 import com.example.data.common.result.asPoVResult
+import com.example.data.common.util.datasync.Synchronizer
+import com.example.data.common.util.datasync.dataSynchronizer
 import com.example.data.data.model.user.User
 import com.example.data.data.model.user.asUser
 import com.example.data.data.model.user.asUserEntity
@@ -20,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -132,4 +135,13 @@ class UserDatasource @Inject constructor(
         }.flowOn(dispatcher)
     }
 
+    override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
+        return synchronizer.dataSynchronizer(
+            remoteData = userApiService.getAllUsers().map(UserRemoteModel::asUser).toSet(),
+            localData = userDao.getAllUsers().first().map(UserEntity::asUser).toSet(),
+            localModelUpdater = {
+                userDao.upsertUser(it.asUserEntity())
+            },
+        )
+    }
 }
