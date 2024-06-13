@@ -1,29 +1,29 @@
 [versions]
-agp = "8.5.0-alpha05"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
+agp = "8.5.0-rc02"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.22"
 #androidxComposeCompiler  = "1.5.7"
-coreKtx = "1.12.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
-activityCompose = "1.8.2"
-composeBom = "2024.04.00"
-lifecycleViewmodelCompose = "2.7.0"
-datastorePreferences = "1.1.0-rc01"
-materialIconsExtended = "1.6.5"
+lifecycleRuntimeKtx = "2.8.1"
+activityCompose = "1.9.0"
+composeBom = "2024.05.00"
+lifecycleViewmodelCompose = "2.8.1"
+datastorePreferences = "1.1.1"
+materialIconsExtended = "1.6.7"
 navigationCompose = "2.7.7"
-lifecycleLivedataKtx = "2.7.0"
-lifecycleViewmodelKtx = "2.7.0"
-lifecycleViewmodelSavedstate = "2.7.0"
+lifecycleLivedataKtx = "2.8.1"
+lifecycleViewmodelKtx = "2.8.1"
+lifecycleViewmodelSavedstate = "2.8.1"
 hiltNavigationCompose = "1.2.0"
 hiltAndroidCompiler = "2.51.1"
 hiltCompiler = "1.2.0"
 hiltWork = "1.2.0"
-hiltAndroid = "2.50"
+hiltAndroid = "2.51.1"
 coreSplashscreen = "1.1.0-rc01"
-window = "1.3.0-beta01"
+window = "1.3.0"
 palette = "1.0.0"
 workRuntimeKtx = "2.9.0"
 roomRuntime = "2.6.1"
@@ -34,7 +34,7 @@ glanceAppwidget = "1.0.0"
 accompanistAdaptive = "0.34.0"
 accompanistFlowlayout = "0.33.2-alpha"
 accompanistSystemuicontroller = "0.33.2-alpha"
-accompanistPermissions = "0.33.2-alpha"
+accompanistPermissions = "0.34.0"
 accompanistSwiperefresh = "0.33.2-alpha"
 accompanistPager = "0.34.0"
 coilCompose = "2.6.0"
@@ -44,16 +44,15 @@ retrofit = "2.11.0"
 kotlinxSerializationJson = "1.6.3"
 gson = "2.10.1"
 loggingInterceptor = "5.0.0-alpha.12"
-kotlinxDatetime = "0.4.1"
 ktorClient = "3.0.0-beta-1"
-playServicesLocation = "21.2.0"
+playServicesLocation = "21.3.0"
 media3Common = "1.3.1"
 media3Exoplayer = "1.3.1"
 media3Ui = "1.3.1"
 kotlinx = "1.1.0"
 securityCrypto = "1.1.0-alpha06"
-appcompat = "1.6.1"
-material = "1.11.0"
+appcompat = "1.7.0"
+material = "1.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -104,7 +103,6 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-client = { group = "io.ktor", name = "ktor-client", version.ref = "ktorClient" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
@@ -119,8 +117,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+# compose
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]

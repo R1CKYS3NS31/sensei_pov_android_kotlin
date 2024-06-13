@@ -4,18 +4,20 @@ import com.example.local.entity.account.UserAccountEntity
 import com.example.remote.model.account.UserAccountRemoteModel
 import com.example.remote.model.account.UserAccountSignInRemoteModel
 import com.example.remote.model.account.UserAccountSignUpRemoteModel
-import kotlin.text.replaceFirstChar
-import kotlin.text.uppercase
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 data class UserAccount(
-    val id: String,
-    val name: Name,
-    val email: String,
-    val password: String,
+    val id: String = "",
+    val name: Name = Name(),
+    val email: String = "",
+    val password: String = "",
     val photoUrl: String? = null,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdAt: String = LocalDateTime.now()
+        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
+    val updatedAt: String = LocalDateTime.now()
+        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
 ) {
     val fullName: String
         get() = "${name.first?.replaceFirstChar { it.uppercase() }} ${name.last?.replaceFirstChar { it.uppercase() }}"
@@ -27,14 +29,14 @@ data class Name(
 )
 
 data class UserAccountSignUp(
-    val name: Name,
-    val email: String,
-    val password: String,
+    val name: Name = Name(),
+    val email: String = "",
+    val password: String = "",
 )
 
 data class UserAccountSignIn(
-    val email: String,
-    val password: String,
+    val email: String = "",
+    val password: String = "",
 )
 
 fun UserAccountSignUpRemoteModel.asUserAccountSignUp(): UserAccountSignUp =
