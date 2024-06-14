@@ -5,15 +5,19 @@ import com.example.data.data.model.account.asName
 import com.example.data.data.model.account.asRemoteName
 import com.example.local.entity.user.UserEntity
 import com.example.remote.model.user.UserRemoteModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 data class User(
-    val id: String,
-    val name: Name,
-    val email: String,
-    val photoUrl: String?,
-    val createdAt: String,
-    val updatedAt: String,
+    val id: String = "",
+    val name: Name = Name(),
+    val email: String = "",
+    val photoUrl: String? = null,
+    val createdAt: String = LocalDateTime.now()
+        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
+    val updatedAt: String = LocalDateTime.now()
+        .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
 ) {
     val fullName: String
         get() = "${name.first?.replaceFirstChar { it.uppercase() }} ${name.last?.replaceFirstChar { it.uppercase() }}"

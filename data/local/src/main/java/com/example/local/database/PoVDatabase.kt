@@ -3,6 +3,7 @@ package com.example.local.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.local.dao.account.UserAccountDao
+import com.example.local.dao.pov.PoVDao
 import com.example.local.dao.user.UserDao
 import com.example.local.entity.account.UserAccountEntity
 import com.example.local.entity.user.UserEntity
@@ -16,4 +17,5 @@ abstract class PoVDatabase : RoomDatabase() {
     /* Dao */
     abstract fun userAccountDao(): UserAccountDao
     abstract fun userDao(): UserDao
+    abstract fun povDao(): PoVDao
 }

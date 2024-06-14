@@ -3,6 +3,7 @@ package com.example.data.data.datasource.account
 import android.util.Log
 import com.example.data.common.dispatcher.Dispatcher
 import com.example.data.common.dispatcher.PoVDispatchers
+import com.example.data.common.dispatcher.di.ApplicationScope
 import com.example.data.common.result.ErrorResponse
 import com.example.data.common.result.PoVResult
 import com.example.data.common.result.asPoVError
@@ -19,7 +20,6 @@ import com.example.datastore.UserAccountPreferencesRepository
 import com.example.local.dao.account.UserAccountDao
 import com.example.local.entity.account.UserAccountEntity
 import com.example.remote.api.account.UserAccountApiService
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +42,7 @@ class UserAccountDatasource @Inject constructor(
     private val userAccountApiService: UserAccountApiService, // remote datasource
     @Dispatcher(PoVDispatchers.IO)
     private val dispatcher: CoroutineDispatcher,
-    @ApplicationContext
+    @ApplicationScope
     private val applicationCoroutineScope: CoroutineScope,
     private val userAccountPreferencesRepository: UserAccountPreferencesRepository
 ) : UserAccountRepository {

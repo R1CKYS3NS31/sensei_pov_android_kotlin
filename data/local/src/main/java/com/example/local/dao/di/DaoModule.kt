@@ -1,6 +1,7 @@
 package com.example.local.dao.di
 
 import com.example.local.dao.account.UserAccountDao
+import com.example.local.dao.pov.PoVDao
 import com.example.local.dao.user.UserDao
 import com.example.local.database.PoVDatabase
 import dagger.Module
@@ -21,4 +22,9 @@ object DaoModule {
     fun providesUserDao(
         database: PoVDatabase
     ): UserDao = database.userDao()
+
+    @Provides
+    fun providePoVDao(
+        database: PoVDatabase
+    ): PoVDao = database.povDao()
 }
