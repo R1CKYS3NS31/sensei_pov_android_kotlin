@@ -1,8 +1,10 @@
 package com.example.data.data.di
 
 import com.example.data.data.datasource.account.UserAccountDatasource
+import com.example.data.data.datasource.pov.PoVDatasource
 import com.example.data.data.datasource.user.UserDatasource
 import com.example.data.data.repository.account.UserAccountRepository
+import com.example.data.data.repository.pov.PoVRepository
 import com.example.data.data.repository.user.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -25,4 +27,10 @@ interface DatasourceModule {
     fun bindsUserRepository(
         userRepository: UserDatasource
     ): UserRepository
+
+    @Binds
+    @Singleton
+    fun bindsPoVRepository(
+        poVDatasource: PoVDatasource
+    ): PoVRepository
 }

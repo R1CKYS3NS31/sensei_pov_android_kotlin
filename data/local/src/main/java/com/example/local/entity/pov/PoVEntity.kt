@@ -11,7 +11,7 @@ data class PoVEntity(
     val title: String,
     val subtitle: String,
     val points: String,
-    val attachment: String,
+    val attachment: String? = null,
     val author: UserEntity? = null,
     val createdAt: String,
     val updatedAt: String

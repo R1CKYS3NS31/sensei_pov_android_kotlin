@@ -107,7 +107,7 @@ class UserDatasource @Inject constructor(
 
             /* from local */
             userDao.getAllUsers().asPoVResult()
-                .map { response ->
+                .map { response -> // unnecessary
                     when (response) {
                         is PoVResult.Success -> {
                             Log.d(TAG, response.toString())

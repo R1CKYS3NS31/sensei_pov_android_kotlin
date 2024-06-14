@@ -4,6 +4,7 @@ import com.example.remote.model.account.Name
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserRemoteModel(
     @SerialName("_id")
     val id: String,
