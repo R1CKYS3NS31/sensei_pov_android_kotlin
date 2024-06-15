@@ -73,6 +73,7 @@ class UserDatasource @Inject constructor(
 
     override fun getAllUsers(): Flow<PoVResult<List<User>>> {
         return flow {
+            emit(PoVResult.Loading)
             flowOf(userApiService.getAllUsers())
                 .asPoVResult()
                 .map { response ->

@@ -40,10 +40,8 @@ const val TAG = "UserAccountDatasource"
 class UserAccountDatasource @Inject constructor(
     private val userAccountDao: UserAccountDao, // local datasource
     private val userAccountApiService: UserAccountApiService, // remote datasource
-    @Dispatcher(PoVDispatchers.IO)
-    private val dispatcher: CoroutineDispatcher,
-    @ApplicationScope
-    private val applicationCoroutineScope: CoroutineScope,
+    @Dispatcher(PoVDispatchers.IO) private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val applicationCoroutineScope: CoroutineScope,
     private val userAccountPreferencesRepository: UserAccountPreferencesRepository
 ) : UserAccountRepository {
     //    override val isOnline: StateFlow<Boolean> = networkMonitor.isOnline
@@ -55,14 +53,13 @@ class UserAccountDatasource @Inject constructor(
 //        )
 
     /* isAuthenticated */
-    override val authToken: StateFlow<String?> =
-        userAccountPreferencesRepository.getToken().map {
-            it
-        }.stateIn(
-            scope = applicationCoroutineScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = null
-        )
+    override val authToken: StateFlow<String?> = userAccountPreferencesRepository.getToken().map {
+        it
+    }.stateIn(
+        scope = applicationCoroutineScope,
+        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+        initialValue = null
+    )
 
     override fun getAllUserAccounts(): Flow<PoVResult<List<UserAccount>>> {
         return userAccountDao.getAllUserAccounts().map {
@@ -71,8 +68,7 @@ class UserAccountDatasource @Inject constructor(
     }
 
     override suspend fun getUserCredentials(): Flow<Pair<String?, String?>> =
-        userAccountPreferencesRepository.getUserAccountCredentials()
-            .catch { it.asPoVError() }
+        userAccountPreferencesRepository.getUserAccountCredentials().catch { it.asPoVError() }
             .flowOn(dispatcher)
 
     override suspend fun signUp(userAccountSignUp: UserAccountSignUp): Flow<PoVResult<UserAccount>> {
@@ -85,8 +81,8 @@ class UserAccountDatasource @Inject constructor(
                             val userAccountRemote = response.data.userAccountRemoteModel
                             response.data.let {
                                 saveUserAccountToDatastore(
-                                    id = it.userAccountRemoteModel.id.orEmpty(),
-                                    password = it.userAccountRemoteModel.password.orEmpty(),
+                                    id = it.userAccountRemoteModel.id,
+                                    password = it.userAccountRemoteModel.password,
                                     token = it.token
                                 )
 //                                authInterceptorRepository.updateToken(tokenString = it.token)
@@ -120,37 +116,37 @@ class UserAccountDatasource @Inject constructor(
     override suspend fun signIn(userAccountSignIn: UserAccountSignIn): Flow<PoVResult<UserAccount>> =
         flow {
             emit(PoVResult.Loading)
-            flowOf(userAccountApiService.signIn(userAccountSignIn.asRemoteModel())).asPoVResult().map { response ->
-                when (response) {
-                    is PoVResult.Success -> {
-                        val userAccountRemoteModel = response.data.userAccountRemoteModel
-                        response.let {
-                            saveUserAccountToDatastore(
-                                id = it.data.userAccountRemoteModel.id,
-                                password = it.data.userAccountRemoteModel.password,
-                                token = it.data.token
-                            )
+            flowOf(userAccountApiService.signIn(userAccountSignIn.asRemoteModel())).asPoVResult()
+                .map { response ->
+                    when (response) {
+                        is PoVResult.Success -> {
+                            val userAccountRemoteModel = response.data.userAccountRemoteModel
+                            response.let {
+                                saveUserAccountToDatastore(
+                                    id = it.data.userAccountRemoteModel.id,
+                                    password = it.data.userAccountRemoteModel.password,
+                                    token = it.data.token
+                                )
 //                        authInterceptorRepository.updateToken(it.token)
+                            }/* save user account to room */
+                            userAccountDao.upsertUserAccount(userAccountRemoteModel.asEntity())
+                            emit(PoVResult.Success(userAccountRemoteModel.asUserAccount()))
                         }
-                        /* save user account to room */
-                        userAccountDao.upsertUserAccount(userAccountRemoteModel.asEntity())
-                        emit(PoVResult.Success(userAccountRemoteModel.asUserAccount()))
-                    }
 
-                    is PoVResult.Error -> {
-                        emit(
-                            PoVResult.Error(
-                                throwable = response.throwable,
-                                responseErrorMessage = response.responseErrorMessage
+                        is PoVResult.Error -> {
+                            emit(
+                                PoVResult.Error(
+                                    throwable = response.throwable,
+                                    responseErrorMessage = response.responseErrorMessage
+                                )
                             )
-                        )
-                    }
+                        }
 
-                    is PoVResult.Loading -> {
-                        emit(PoVResult.Loading)
+                        is PoVResult.Loading -> {
+                            emit(PoVResult.Loading)
+                        }
                     }
-                }
-            }.collect()
+                }.collect()
         }.catch {
             emit(it.asPoVError())
         }.flowOn(dispatcher)
@@ -158,8 +154,7 @@ class UserAccountDatasource @Inject constructor(
     override suspend fun signOut(userAccount: UserAccount): Flow<PoVResult<Unit>> = flow {
         emit(PoVResult.Loading)
         userAccountPreferencesRepository.signout()
-        flowOf(userAccountApiService.signOut()).asPoVResult()
-            .map { response: PoVResult<Unit> ->
+        flowOf(userAccountApiService.signOut()).asPoVResult().map { response: PoVResult<Unit> ->
                 when (response) {
                     is PoVResult.Success -> {
                         emit(PoVResult.Success(response.data))
@@ -186,15 +181,13 @@ class UserAccountDatasource @Inject constructor(
             }.collect()
         userAccountDao.deleteUserAccount(userAccountEntity = userAccount.asEntity())
         emit(PoVResult.Success(Unit))
-    }.catch { it.asPoVError() }
-        .flowOn(dispatcher)
+    }.catch { it.asPoVError() }.flowOn(dispatcher)
 
     override suspend fun getUserAccount(userAccountId: String): Flow<PoVResult<UserAccount>> =
         flow {
             emit(PoVResult.Loading)
 
-            userAccountDao.getUserAccount(id = userAccountId).asPoVResult()
-                .map { response ->
+            userAccountDao.getUserAccount(id = userAccountId).asPoVResult().map { response ->
                     when (response) {
                         is PoVResult.Success -> {
                             val userAccountEntity = response.data
@@ -257,8 +250,7 @@ class UserAccountDatasource @Inject constructor(
                 emit(
                     PoVResult.Error(
                         responseErrorMessage = ErrorResponse(
-                            errorCode = 401,
-                            errorMessage = "unauthorized - please sign in"
+                            errorCode = 401, errorMessage = "unauthorized - please sign in"
                         )
                     )
                 )
@@ -289,9 +281,7 @@ class UserAccountDatasource @Inject constructor(
     }
 
     private suspend fun saveUserAccountToDatastore(
-        id: String,
-        password: String,
-        token: String
+        id: String, password: String, token: String
     ) {
         userAccountPreferencesRepository.saveUserAccountCredential(id, password)
         userAccountPreferencesRepository.saveToken(token)

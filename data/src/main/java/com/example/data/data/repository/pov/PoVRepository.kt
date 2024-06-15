@@ -7,10 +7,10 @@ import com.example.data.data.model.pov.PoV
 import kotlinx.coroutines.flow.Flow
 
 interface PoVRepository : Syncable {
-    suspend fun addPoV(newPoV: NewPoV)
-    suspend fun addEditPoV(newPoV: NewPoV)
+    suspend fun addPoV(newPoV: NewPoV): Flow<PoVResult<PoV>>
+    suspend fun addEditPoV(newPoV: NewPoV): Flow<PoVResult<PoV>>
     fun getAllPoVs(): Flow<PoVResult<List<PoV>>>
     fun getPoV(poVId: String): Flow<PoVResult<PoV>>
     suspend fun editPoV(poV: PoV): Flow<PoVResult<PoV>>
-    suspend fun delete(poV: PoV)
+    suspend fun delete(poV: PoV): Flow<PoVResult<PoV>>
 }

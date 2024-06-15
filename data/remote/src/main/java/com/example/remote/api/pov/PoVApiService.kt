@@ -1,5 +1,6 @@
 package com.example.remote.api.pov
 
+import com.example.remote.model.pov.NewPoVRemoteModel
 import com.example.remote.model.pov.PoVRemoteModel
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -12,7 +13,7 @@ interface PoVApiService {
     @POST(value = "povs/")
     suspend fun createPoV(
         @Body
-        poVRemoteModel: PoVRemoteModel
+        newPoVRemoteModel: NewPoVRemoteModel
     ): PoVRemoteModel
 
     @GET(value = "povs")
@@ -34,5 +35,5 @@ interface PoVApiService {
     suspend fun deletePoV(
         @Path(value = "povId")
         povId: String
-    )
+    ):PoVRemoteModel
 }

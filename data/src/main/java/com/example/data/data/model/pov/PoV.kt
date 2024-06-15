@@ -100,3 +100,14 @@ fun PoVRemoteModel.asPoV(): PoV = PoV(
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
+
+fun PoV.asRemote(): PoVRemoteModel = PoVRemoteModel(
+    id = id,
+    title = title,
+    subtitle = subtitle,
+    points = points,
+    attachment = attachment,
+    author = author?.asRemote(),
+    createdAt = createdAt,
+    updatedAt = updatedAt,
+)

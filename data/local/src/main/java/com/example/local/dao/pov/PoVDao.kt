@@ -13,7 +13,7 @@ interface PoVDao {
     suspend fun insertPoV(poVEntity: PoVEntity)
 
     @Upsert
-    suspend fun upsert(poVEntity: PoVEntity)
+    suspend fun upsertPoV(poVEntity: PoVEntity)
 
     @Query("select * from  pov")
     fun getAllPoVs(): Flow<List<PoVEntity>>
