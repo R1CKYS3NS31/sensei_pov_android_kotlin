@@ -9,15 +9,13 @@ import com.example.data.common.util.datasync.Synchronizer
 import com.example.data.data.model.pov.NewPoV
 import com.example.data.data.model.pov.PoV
 import com.example.data.data.model.pov.asPoV
-import com.example.data.data.model.pov.asPoVEntity
+import com.example.data.data.model.pov.asEntity
 import com.example.data.data.repository.pov.PoVRepository
 import com.example.local.dao.pov.PoVDao
 import com.example.local.entity.pov.PoVEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -29,11 +27,11 @@ class PoVDatasource @Inject constructor(
     private val applicationScope: CoroutineScope
 ) : PoVRepository {
     override suspend fun addPoV(newPoV: NewPoV) {
-        poVDao.insertPoV(newPoV.asPoV().asPoVEntity())
+        poVDao.insertPoV(newPoV.asPoV().asEntity())
     }
 
     override suspend fun addEditPoV(newPoV: NewPoV) {
-        poVDao.upsert(newPoV.asPoV().asPoVEntity())
+        poVDao.upsert(newPoV.asPoV().asEntity())
     }
 
     override fun getAllPoVs(): Flow<PoVResult<List<PoV>>> {
@@ -47,12 +45,12 @@ class PoVDatasource @Inject constructor(
     }
 
     override suspend fun editPoV(poV: PoV): Flow<PoVResult<PoV>> {
-        poVDao.updatePoV(poV.asPoVEntity())
+        poVDao.updatePoV(poV.asEntity())
         return poVDao.getPoV(poV.id).map(PoVEntity::asPoV).asPoVResult()
     }
 
     override suspend fun delete(poV: PoV) {
-        poVDao.deletePoV(poV.asPoVEntity())
+        poVDao.deletePoV(poV.asEntity())
     }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
