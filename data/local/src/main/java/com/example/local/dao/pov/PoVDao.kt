@@ -1,5 +1,6 @@
 package com.example.local.dao.pov
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
@@ -8,6 +9,7 @@ import androidx.room.Upsert
 import com.example.local.entity.pov.PoVEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface PoVDao {
     @Insert
     suspend fun insertPoV(poVEntity: PoVEntity)
@@ -15,10 +17,10 @@ interface PoVDao {
     @Upsert
     suspend fun upsertPoV(poVEntity: PoVEntity)
 
-    @Query("select * from  pov")
+    @Query("select * from pov")
     fun getAllPoVs(): Flow<List<PoVEntity>>
 
-    @Query("select * from  pov where id =:id")
+    @Query("select * from pov where id =:id")
     fun getPoV(id: String): Flow<PoVEntity>
 
     @Update

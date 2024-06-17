@@ -1,9 +1,5 @@
 package com.example.data.data.model.pov
 
-import com.example.data.data.model.user.User
-import com.example.data.data.model.user.asRemote
-import com.example.data.data.model.user.asUser
-import com.example.data.data.model.user.asUserEntity
 import com.example.local.entity.pov.PoVEntity
 import com.example.remote.model.pov.NewPoVRemoteModel
 import com.example.remote.model.pov.PoVRemoteModel
@@ -16,7 +12,7 @@ data class PoV(
     val subtitle: String = "",
     val points: String = "",
     val attachment: String? = null,
-    val author: User? = null,
+    val author: String,
     val createdAt: String = LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
     val updatedAt: String = LocalDateTime.now()
@@ -28,7 +24,7 @@ data class NewPoV(
     val subtitle: String = "",
     val points: String = "",
     val attachment: String? = null,
-    val author: User? = null
+    val author: String
 )
 
 fun PoV.asNewPoV(): NewPoV = NewPoV(
@@ -54,7 +50,7 @@ fun PoV.asEntity(): PoVEntity = PoVEntity(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asUserEntity(),
+    author = author,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -65,7 +61,7 @@ fun PoVEntity.asPoV(): PoV = PoV(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asUser(),
+    author = author,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -76,7 +72,7 @@ fun NewPoV.asRemote() = NewPoVRemoteModel(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asRemote()
+    author = author
 )
 
 fun PoVEntity.asRemote(): PoVRemoteModel = PoVRemoteModel(
@@ -85,7 +81,7 @@ fun PoVEntity.asRemote(): PoVRemoteModel = PoVRemoteModel(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asUser()?.asRemote(),
+    author = author,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -96,7 +92,7 @@ fun PoVRemoteModel.asPoV(): PoV = PoV(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asUser(),
+    author = author,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )
@@ -107,7 +103,7 @@ fun PoV.asRemote(): PoVRemoteModel = PoVRemoteModel(
     subtitle = subtitle,
     points = points,
     attachment = attachment,
-    author = author?.asRemote(),
+    author = author,
     createdAt = createdAt,
     updatedAt = updatedAt,
 )

@@ -1,6 +1,5 @@
 package com.example.remote.model.pov
 
-import com.example.remote.model.user.UserRemoteModel
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,7 +11,7 @@ data class PoVRemoteModel(
     val subtitle: String,
     val points: String,
     val attachment: String? = null,
-    val author: UserRemoteModel? = null,
+    val author: String,
     val createdAt: String,
     val updatedAt: String
 )
@@ -24,5 +23,5 @@ data class NewPoVRemoteModel(
     val subtitle: String = "",
     val points: String,
     val attachment: String? = null,
-    val author: UserRemoteModel? = null,
+    val author: String
 )

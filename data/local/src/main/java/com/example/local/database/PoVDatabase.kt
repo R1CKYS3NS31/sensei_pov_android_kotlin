@@ -6,10 +6,15 @@ import com.example.local.dao.account.UserAccountDao
 import com.example.local.dao.pov.PoVDao
 import com.example.local.dao.user.UserDao
 import com.example.local.entity.account.UserAccountEntity
+import com.example.local.entity.pov.PoVEntity
 import com.example.local.entity.user.UserEntity
 
 @Database(
-    entities = [UserAccountEntity::class, UserEntity::class],
+    entities = [
+        UserAccountEntity::class,
+        UserEntity::class,
+        PoVEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
