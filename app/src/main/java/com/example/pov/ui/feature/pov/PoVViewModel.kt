@@ -70,7 +70,7 @@ class PoVViewModel @Inject constructor(
                             is PoVResult.Error -> {
                                 Log.d(
                                     TAG,
-                                    "PoV getAllPoVs error: ${result.responseErrorMessage}",
+                                    "PoV updatePoV error: ${result.responseErrorMessage}",
                                     result.throwable
                                 )
                                 _errorMessage.emit(
