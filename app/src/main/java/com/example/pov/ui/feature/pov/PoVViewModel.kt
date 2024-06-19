@@ -39,9 +39,22 @@ class PoVViewModel @Inject constructor(
         initialValue = PoVUiState.Loading
     )
 
-    fun updatePoVUiState(poV:PoV){
-
+    fun updatePoVUiState(poV: PoV) {
+        viewModelScope.launch {
+            _poVUiState.emit(
+                PoVUiState.Success(
+                    poV = poV,
+                    isEditEntryValid = validatePoVInput(poV)
+                )
+            )
+        }
     }
+
+    private fun validatePoVInput(poV: PoV): Boolean =
+        with(poV) {
+            !(title.isBlank() || subtitle.isBlank() || points.isBlank() || author.isBlank())
+        }
+
 
     init {
         viewModelScope.launch {
@@ -49,7 +62,7 @@ class PoVViewModel @Inject constructor(
                 when (poVResultList) {
                     is PoVResult.Success -> {
                         _poVUiState.emit(
-                            PoVUiState.Success(poVResultList.data)
+                            PoVUiState.Success(povs = poVResultList.data)
                         )
                     }
 
@@ -89,7 +102,9 @@ class PoVViewModel @Inject constructor(
 sealed interface PoVUiState {
     data object Loading : PoVUiState
     data class Success(
-        val povs: List<PoV> = emptyList(), val isEditEntryValid: Boolean = false
+        val poV: PoV = PoV(author = ""),
+        val povs: List<PoV> = emptyList(),
+        val isEditEntryValid: Boolean = false
     ) : PoVUiState
 
     data class Error(
