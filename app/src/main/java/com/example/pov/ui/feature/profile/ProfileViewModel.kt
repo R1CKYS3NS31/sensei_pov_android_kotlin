@@ -193,16 +193,3 @@ sealed interface ProfileUiState {
         val responseErrorMessage: ErrorResponse? = null
     ) : ProfileUiState
 }
-
-//sealed interface ProfileEditUiState {
-//    data object Loading : ProfileEditUiState
-//    data class Success(
-//        val userAccount: UserAccount = UserAccount(),
-//        val isEditEntryValid: Boolean = false
-//    ) : ProfileEditUiState
-//
-//    data class Error(
-//        val throwable: Throwable? = null,
-//        val responseErrorMessage: ErrorResponse? = null
-//    ) : ProfileEditUiState
-//}

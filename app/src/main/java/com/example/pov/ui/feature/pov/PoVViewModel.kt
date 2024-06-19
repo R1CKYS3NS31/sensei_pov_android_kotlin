@@ -43,7 +43,7 @@ class PoVViewModel @Inject constructor(
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(
-                    poV = poV,
+                    listOf(poV),
                     isEditEntryValid = validatePoVInput(poV)
                 )
             )
@@ -55,6 +55,45 @@ class PoVViewModel @Inject constructor(
             !(title.isBlank() || subtitle.isBlank() || points.isBlank() || author.isBlank())
         }
 
+    fun updatePoV(poV: PoV) {
+        if (validatePoVInput(poV)) {
+            viewModelScope.launch {
+                poVRepository.editPoV(poV)
+                    .map { result: PoVResult<PoV> ->
+                        when (result) {
+                            is PoVResult.Success -> {
+                                _poVUiState.emit(
+                                    PoVUiState.Success(listOf(result.data))
+                                )
+                            }
+
+                            is PoVResult.Error -> {
+                                Log.d(
+                                    TAG,
+                                    "PoV getAllPoVs error: ${result.responseErrorMessage}",
+                                    result.throwable
+                                )
+                                _errorMessage.emit(
+                                    result.responseErrorMessage?.errorMessage ?: ""
+                                )
+                                _poVUiState.emit(
+                                    PoVUiState.Error(
+                                        throwable = result.throwable,
+                                        responseErrorMessage = result.responseErrorMessage
+                                    )
+                                )
+                            }
+
+                            PoVResult.Loading -> {
+                                _poVUiState.emit(
+                                    PoVUiState.Loading
+                                )
+                            }
+                        }
+                    }
+            }
+        }
+    }
 
     init {
         viewModelScope.launch {
@@ -71,6 +110,9 @@ class PoVViewModel @Inject constructor(
                             TAG,
                             "PoV getAllPoVs error: ${poVResultList.responseErrorMessage}",
                             poVResultList.throwable
+                        )
+                        _errorMessage.emit(
+                            poVResultList.responseErrorMessage?.errorMessage ?: ""
                         )
                         _poVUiState.emit(
                             PoVUiState.Error(
@@ -102,7 +144,6 @@ class PoVViewModel @Inject constructor(
 sealed interface PoVUiState {
     data object Loading : PoVUiState
     data class Success(
-        val poV: PoV = PoV(author = ""),
         val povs: List<PoV> = emptyList(),
         val isEditEntryValid: Boolean = false
     ) : PoVUiState
