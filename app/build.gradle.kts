@@ -82,6 +82,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.ui)
     implementation(libs.kotlinx)
+    implementation(libs.androidx.ui.text.google.fonts)
     /* hilt */
     ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)

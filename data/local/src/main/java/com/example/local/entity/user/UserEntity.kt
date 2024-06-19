@@ -9,9 +9,9 @@ import androidx.room.PrimaryKey
 data class UserEntity(
     val id: String,
     @ColumnInfo("first_name")
-    val firstName: String? = null,
+    val firstName: String,
     @ColumnInfo("last_name")
-    val lastName: String? = null,
+    val lastName: String,
     @PrimaryKey
     val email: String,
     @ColumnInfo("photo_url")

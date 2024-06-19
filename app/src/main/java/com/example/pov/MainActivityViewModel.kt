@@ -24,7 +24,6 @@ class MainActivityViewModel @Inject constructor(
         )
     }
 
-
     companion object {
         const val TIMEOUT_MILLIS = 5_000L
     }

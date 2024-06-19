@@ -20,12 +20,12 @@ data class UserAccount(
         .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
 ) {
     val fullName: String
-        get() = "${name.first?.replaceFirstChar { it.uppercase() }} ${name.last?.replaceFirstChar { it.uppercase() }}"
+        get() = "${name.first.replaceFirstChar { it.uppercase() }} ${name.last.replaceFirstChar { it.uppercase() }}"
 }
 
 data class Name(
-    val first: String? = null,
-    val last: String? = null
+    val first: String = "",
+    val last: String = ""
 )
 
 data class UserAccountSignUp(

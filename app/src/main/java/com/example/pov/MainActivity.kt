@@ -1,22 +1,99 @@
 package com.example.pov
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.View
+import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.data.common.util.network.NetworkMonitor
 import com.example.pov.ui.theme.PoVTheme
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    private val viewModel by viewModels<MainActivityViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        var mainActivityUiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
+
+        /* update the mainActivityUiState*/
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.mainActivityUiState
+                    .onEach { mainActivityUiState = it }
+                    .collect()
+            }
+        }
+
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                /* set till app/viewModel is ready */
+                when (mainActivityUiState) {
+                    MainActivityUiState.Loading -> true
+                    is MainActivityUiState.Success -> false
+                }
+            }
+
+            setOnExitAnimationListener { splashScreen ->
+                val zoomX = ObjectAnimator.ofFloat(
+                    splashScreen.iconView,
+                    View.SCALE_X,
+                    0.4f,
+                    0.0f
+                )
+                zoomX.interpolator = OvershootInterpolator()
+                zoomX.duration = 500L
+                zoomX.doOnEnd { splashScreen.remove() }
+
+                val zoomY = ObjectAnimator.ofFloat(
+                    splashScreen.iconView,
+                    View.SCALE_Y,
+                    0.4f,
+                    0.0f
+                )
+                zoomY.interpolator = OvershootInterpolator()
+                zoomY.duration = 500L
+                zoomY.doOnEnd { splashScreen.remove() }
+
+                zoomX.start()
+                zoomY.start()
+            }
+        }
+
         setContent {
             PoVTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -25,6 +102,9 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
+//                Surface (modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background){
+//
+//                }
             }
         }
     }
@@ -43,5 +123,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     PoVTheme {
         Greeting("Android")
+    }
+}
+
+private fun isAuthenticated(
+    mainActivityUiState: MainActivityUiState
+): Boolean = when (mainActivityUiState) {
+    MainActivityUiState.Loading -> false
+    is MainActivityUiState.Success -> when (mainActivityUiState.authToken.isNotBlank()) {
+        true -> true
+        false -> false
     }
 }

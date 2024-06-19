@@ -18,8 +18,8 @@ data class UserAccountRemoteModel(
 
 @Serializable
 data class Name(
-    val first: String? = null,
-    val last: String? = null
+    val first: String = "",
+    val last: String = ""
 )
 
 @Serializable
