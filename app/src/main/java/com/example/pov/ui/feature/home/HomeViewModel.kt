@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.common.result.ErrorResponse
 import com.example.data.common.result.PoVResult
 import com.example.data.common.util.datasync.SyncManager
-import com.example.data.data.model.user.User
-import com.example.data.data.repository.user.UserRepository
+import com.example.data.data.model.pov.PoV
+import com.example.data.data.repository.pov.PoVRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,18 +20,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+private const val TAG = "HomeViewModel"
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    syncManager: SyncManager,
-    userRepository: UserRepository
+    syncManager: SyncManager, poVRepository: PoVRepository
 ) : ViewModel() {
 
-    val isSyncing = syncManager.isSyncing
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIME_IN_MILLIS),
-            initialValue = false
-        )
+    val isSyncing = syncManager.isSyncing.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(TIME_IN_MILLIS),
+        initialValue = false
+    )
 
     /* error message */
     private val _errorMessage = MutableSharedFlow<String>()
@@ -41,14 +41,23 @@ class HomeViewModel @Inject constructor(
         initialValue = ""
     )
 
+
     val homeUiState: StateFlow<HomeUiState> by lazy {
-        userRepository.getAllUsers().map { result ->
+        poVRepository.getAllPoVs().map { result: PoVResult<List<PoV>> ->
             when (result) {
                 is PoVResult.Success -> {
-                    HomeUiState.Success(users = result.data)
+                    HomeUiState.Success(povs = result.data)
                 }
 
                 is PoVResult.Error -> {
+                    Log.d(
+                        TAG,
+                        "PoV getAllPoVs error: ${result.responseErrorMessage}",
+                        result.throwable
+                    )
+                    _errorMessage.emit(
+                        result.responseErrorMessage?.errorMessage ?: ""
+                    )
                     HomeUiState.Error(
                         throwable = result.throwable,
                         responseErrorMessage = result.responseErrorMessage
@@ -73,26 +82,22 @@ class HomeViewModel @Inject constructor(
     }
 }
 
-fun LazyGridScope.usersGridList(
+fun LazyGridScope.poVGridList(
     homeUiState: HomeUiState,
-    onUserClick: (String) -> Unit,
+    onPoVClick: (String) -> Unit,
 ) {
     when (homeUiState) {
         HomeUiState.Loading -> Unit
         is HomeUiState.Error -> {
-            Log.d("HomeViewModel", homeUiState.responseErrorMessage?.errorMessage ?: "")
+            Log.d(TAG, homeUiState.responseErrorMessage?.errorMessage ?: "")
         }
 
         is HomeUiState.Success -> {
-            Log.d("HomeViewModel", "user accounts: ${homeUiState.users.size}")
-            items(
-                items = homeUiState.users,
-                key = {
-                    it.id.orEmpty()
-                },
-                contentType = { "userAccounts" }
-            ) { user ->
-                Text(text = "user: ${user.name}")
+            Log.d(TAG, "PoVs: ${homeUiState.povs.size}")
+            items(items = homeUiState.povs, key = {
+                it.id
+            }, contentType = { "PoVs" }) { pov ->
+                Text(text = "user: ${pov.title}")
             }
         }
     }
@@ -102,12 +107,10 @@ fun LazyGridScope.usersGridList(
 sealed interface HomeUiState {
     data object Loading : HomeUiState
     data class Success(
-        val users: List<User> = emptyList(),
-    ) :
-        HomeUiState
+        val povs: List<PoV> = emptyList(), val isEditEntryValid: Boolean = false
+    ) : HomeUiState
 
     data class Error(
-        val throwable: Throwable? = null,
-        val responseErrorMessage: ErrorResponse? = null
+        val throwable: Throwable? = null, val responseErrorMessage: ErrorResponse? = null
     ) : HomeUiState
 }

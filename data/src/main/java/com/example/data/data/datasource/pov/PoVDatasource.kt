@@ -41,9 +41,19 @@ class PoVDatasource @Inject constructor(
     @ApplicationScope
     private val applicationScope: CoroutineScope
 ) : PoVRepository {
+//    override suspend fun addPoV(newPoV: NewPoV): Flow<PoVResult<PoV>> {
+//        return flow {
+//            emit(PoVResult.Loading)
+//            val localPoV = poVDao.insertPoV(newPoV.asPoV().asEntity()).asPoV()
+//            val remotePoV = poVApiService.createPoV(newPoV.asRemote()).asPoV()
+//
+//        }
+//    }
+
     override suspend fun addPoV(newPoV: NewPoV): Flow<PoVResult<PoV>> {
         return flow {
             emit(PoVResult.Loading)
+            poVDao.insertPoV(newPoV.asPoV().asEntity())
             flowOf(poVApiService.createPoV(newPoV.asRemote())).asPoVResult()
                 .map { response ->
                     when (response) {

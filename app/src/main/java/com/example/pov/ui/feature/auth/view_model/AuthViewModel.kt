@@ -77,8 +77,8 @@ class AuthViewModel @Inject constructor(
 
     private fun validateSignUpInput(userAccountSignUp: UserAccountSignUp): Boolean =
         with(userAccountSignUp) {
-            !(name.first.isNullOrBlank()
-                    || name.last.isNullOrBlank()
+            !(name.first.isBlank()
+                    || name.last.isBlank()
                     || email.isBlank()
                     || password.isBlank())
                     && Patterns.EMAIL_ADDRESS.matcher(email).matches()

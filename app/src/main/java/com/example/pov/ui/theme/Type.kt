@@ -34,10 +34,10 @@ val displayFontFamily = FontFamily(
 )
 
 // Set of Material typography styles to start with
-//private val Montserrat = FontFamily(
-//    Font(R.font.montserrat_regular),
-//    Font(R.font.montserrat_medium, FontWeight.W500)
-//)
+private val Montserrat = FontFamily(
+    androidx.compose.ui.text.font.Font(R.font.montserrat_regular),
+    androidx.compose.ui.text.font.Font(R.font.montserrat_medium, FontWeight.W500)
+)
 
 val defaultTextStyle = TextStyle(
 //    fontFamily = Montserrat,
