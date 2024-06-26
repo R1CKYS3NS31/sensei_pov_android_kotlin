@@ -28,4 +28,8 @@
     <string name="storage">Storage</string>
     <string name="storage_description">File storage</string>
     <string name="please_sign_in">Please Sign-In</string>
+    <string name="title">PoV Title...</string>
+    <string name="subtitle">Subtitle...</string>
+    <string name="points">Points</string>
+    <string name="create_pov">Create PoV</string>
 </resources>

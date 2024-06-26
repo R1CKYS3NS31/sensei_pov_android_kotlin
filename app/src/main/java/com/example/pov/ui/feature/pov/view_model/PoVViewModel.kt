@@ -42,7 +42,7 @@ class PoVViewModel @Inject constructor(
         initialValue = PoVUiState.Loading
     )
 
-    fun updatePoVToUiState(poV: PoV) {
+    fun editPoVUiState(poV: PoV) {
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(
@@ -53,7 +53,7 @@ class PoVViewModel @Inject constructor(
         }
     }
 
-    fun addPoVUiToState(newPoV: NewPoV) {
+    fun addPoVToUiState(newPoV: NewPoV) {
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(

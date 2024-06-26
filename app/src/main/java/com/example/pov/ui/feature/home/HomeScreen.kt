@@ -79,7 +79,9 @@ fun HomeScreen(
         !isSyncing && !isHomeUiStateLoading
     }
 
-    Scaffold { paddingValues ->
+    Scaffold (
+        floatingActionButton = {}
+    ){ paddingValues ->
 
         HomeBody(
             modifier = Modifier
