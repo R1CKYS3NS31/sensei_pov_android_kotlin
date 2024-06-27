@@ -7,14 +7,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.pov.R
 
 @Composable
-fun PoVCreateFab(modifier: Modifier = Modifier, onClickCreatePoV: () -> Unit = {}) {
+fun PoVCreateFab(
+    modifier: Modifier = Modifier,
+    onClickCreatePoV: () -> Unit = {},
+    icon: ImageVector = Icons.Filled.Add,
+    text: Int = R.string.fab
+) {
     ExtendedFloatingActionButton(
+        modifier = modifier,
         onClick = { onClickCreatePoV() },
-        icon = { Icon(Icons.Filled.Add, stringResource(id = R.string.create_pov)) },
-        text = { Text(text = stringResource(id = R.string.create_pov)) },
+        icon = { Icon(icon, stringResource(id = text)) },
+        text = { Text(text = stringResource(id = text)) },
     )
 }

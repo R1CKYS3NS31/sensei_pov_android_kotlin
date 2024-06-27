@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.pov.R
+import com.example.pov.ui.design.component.pov.PoVCreateFab
+import com.example.pov.ui.feature.pov.navigation.navigateToPovAddEdit
+import com.example.pov.ui.navigation.main.PoVNavOptions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -49,12 +54,14 @@ fun HomeRoute(
     ) {
     HomeScreen(
         viewModel = viewModel,
+        navHostController = navHostController
     )
 }
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    navHostController: NavHostController,
 ) {
     val homeUiState by viewModel.homeUiState.collectAsState()
     val isSyncing by viewModel.isSyncing.collectAsState()
@@ -79,19 +86,31 @@ fun HomeScreen(
         !isSyncing && !isHomeUiStateLoading
     }
 
-    Scaffold (
-        floatingActionButton = {}
-    ){ paddingValues ->
-
+    Scaffold(
+        floatingActionButton = {
+            PoVCreateFab(
+                modifier = Modifier,
+                onClickCreatePoV = {
+                    navHostController.navigateToPovAddEdit(
+                        /* navOptions */
+                    )
+                },
+                icon = Icons.Filled.Add,
+                text = R.string.create_pov
+            )
+        }
+    ) { paddingValues ->
         HomeBody(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues), homeUiState = homeUiState
         )
 
-        AnimatedVisibility(visible = isSyncing || isHomeUiStateLoading,
+        AnimatedVisibility(
+            visible = isSyncing || isHomeUiStateLoading,
             enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut()) {
+            exit = slideOutVertically(targetOffsetY = { fullHeight -> -fullHeight }) + fadeOut()
+        ) {
             val loadingContentDescription = stringResource(id = R.string.loading)
             Box(
                 modifier = Modifier
@@ -105,7 +124,6 @@ fun HomeScreen(
                 )
             }
         }
-
         NotificationPermissionEffect()
     }
 }

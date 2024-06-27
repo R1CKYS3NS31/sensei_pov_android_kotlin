@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.data.data.model.pov.PoV
-import com.example.pov.Greeting
 import com.example.pov.R
 import com.example.pov.ui.design.component.pov.PoVForm
 import com.example.pov.ui.feature.pov.view_model.PoVUiState
@@ -24,7 +23,7 @@ import com.example.pov.ui.theme.PoVTheme
 
 @Composable
 fun PovAddEditRoute(
-    navHostController: NavHostController, viewModel: PoVViewModel = hiltViewModel()
+    navHostController: NavHostController,    viewModel: PoVViewModel = hiltViewModel()
 ) {
     PoVAddEditScreen(viewModel = viewModel)
 }
@@ -33,7 +32,9 @@ fun PovAddEditRoute(
 fun PoVAddEditScreen(viewModel: PoVViewModel) {
     val poVUiState by viewModel.poVUiState.collectAsState(initial = PoVUiState.Success())
 
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = {}
+    ) { paddingValues ->
         PoVAddEditBody(modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
