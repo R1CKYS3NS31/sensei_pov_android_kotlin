@@ -150,7 +150,6 @@ fun HomeBody(modifier: Modifier = Modifier, homeUiState: HomeUiState) {
     }
 }
 
-
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
 @Composable
 private fun NotificationPermissionEffect() {
