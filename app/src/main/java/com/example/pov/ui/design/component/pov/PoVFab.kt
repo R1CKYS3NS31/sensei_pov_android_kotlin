@@ -12,15 +12,15 @@ import androidx.compose.ui.res.stringResource
 import com.example.pov.R
 
 @Composable
-fun PoVCreateFab(
+fun PoVFab(
     modifier: Modifier = Modifier,
-    onClickCreatePoV: () -> Unit = {},
+    onClickPoVFab: () -> Unit = {},
     icon: ImageVector = Icons.Filled.Add,
     text: Int = R.string.fab
 ) {
     ExtendedFloatingActionButton(
         modifier = modifier,
-        onClick = { onClickCreatePoV() },
+        onClick = { onClickPoVFab() },
         icon = { Icon(icon, stringResource(id = text)) },
         text = { Text(text = stringResource(id = text)) },
     )

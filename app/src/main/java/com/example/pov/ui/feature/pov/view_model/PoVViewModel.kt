@@ -35,11 +35,11 @@ class PoVViewModel @Inject constructor(
         initialValue = ""
     )
 
-    private val _poVUiState = MutableSharedFlow<PoVUiState>()
-    val poVUiState: StateFlow<PoVUiState> = _poVUiState.asSharedFlow().stateIn(
+    private val _poVUiState = MutableSharedFlow<PoVUiState.Success>()
+    val poVUiState: StateFlow<PoVUiState.Success> = _poVUiState.asSharedFlow().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIME_IN_MILLIS),
-        initialValue = PoVUiState.Loading
+        initialValue = PoVUiState.Success()
     )
 
     fun editPoVUiState(poV: PoV) {
@@ -64,8 +64,8 @@ class PoVViewModel @Inject constructor(
         }
     }
 
-    private fun validatePoVInput(poV: NewPoV): Boolean =
-        with(poV) {
+    private fun validatePoVInput(newPoV: NewPoV): Boolean =
+        with(newPoV) {
             !(title.isBlank() || subtitle.isBlank() || points.isBlank() || author.isBlank())
         }
 
@@ -90,18 +90,18 @@ class PoVViewModel @Inject constructor(
                                 _errorMessage.emit(
                                     result.responseErrorMessage?.errorMessage ?: ""
                                 )
-                                _poVUiState.emit(
-                                    PoVUiState.Error(
-                                        throwable = result.throwable,
-                                        responseErrorMessage = result.responseErrorMessage
-                                    )
-                                )
+//                                _poVUiState.emit(
+//                                    PoVUiState.Error(
+//                                        throwable = result.throwable,
+//                                        responseErrorMessage = result.responseErrorMessage
+//                                    )
+//                                )
                             }
 
                             PoVResult.Loading -> {
-                                _poVUiState.emit(
-                                    PoVUiState.Loading
-                                )
+//                                _poVUiState.emit(
+//                                    PoVUiState.Loading
+//                                )
                             }
                         }
                     }.collect()
@@ -110,7 +110,7 @@ class PoVViewModel @Inject constructor(
     }
 
 
-    fun updatePoV(poV: PoV) {
+    fun editPoV(poV: PoV) {
         if (validatePoVInput(poV.asNewPoV())) {
             viewModelScope.launch {
                 poVRepository.editPoV(poV)
@@ -131,18 +131,18 @@ class PoVViewModel @Inject constructor(
                                 _errorMessage.emit(
                                     result.responseErrorMessage?.errorMessage ?: ""
                                 )
-                                _poVUiState.emit(
-                                    PoVUiState.Error(
-                                        throwable = result.throwable,
-                                        responseErrorMessage = result.responseErrorMessage
-                                    )
-                                )
+//                                _poVUiState.emit(
+//                                    PoVUiState.Error(
+//                                        throwable = result.throwable,
+//                                        responseErrorMessage = result.responseErrorMessage
+//                                    )
+//                                )
                             }
 
                             PoVResult.Loading -> {
-                                _poVUiState.emit(
-                                    PoVUiState.Loading
-                                )
+//                                _poVUiState.emit(
+//                                    PoVUiState.Loading
+//                                )
                             }
                         }
                     }.collect()

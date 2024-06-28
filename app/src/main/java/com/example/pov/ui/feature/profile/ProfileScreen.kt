@@ -40,7 +40,6 @@ import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material.icons.outlined.Security
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,6 +79,7 @@ import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.example.data.data.model.account.UserAccount
 import com.example.pov.R
+import com.example.pov.ui.design.component.pov.PoVFab
 import com.example.pov.ui.feature.auth.navigation.navigateToSignIn
 import com.example.pov.ui.feature.profile.navigation.navigateToEditProfile
 import kotlinx.coroutines.launch
@@ -184,16 +184,12 @@ fun ProfileBody(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { /*TODO*/ },
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Sms, contentDescription = null
-                )
-                Text(
-                    text = "message", modifier = Modifier.padding(4.dp)
-                )
-            }
+            PoVFab(
+                modifier = Modifier,
+                onClickPoVFab = {},
+                icon = Icons.Filled.Sms,
+                text = R.string.message
+            )
         },
     ) { paddingValues ->
 
@@ -420,55 +416,6 @@ fun FillWidthPhoto(
             error = painterResource(id = R.drawable.ic_launcher_foreground),
             modifier = Modifier.fillMaxWidth()
         )
-
-//        CenterAlignedTopAppBar(
-//            title = {
-////                Text(text = "Name")
-//            },
-//            colors = TopAppBarDefaults.topAppBarColors(
-//                titleContentColor = MaterialTheme.colorScheme.background,
-//                containerColor = Color.Transparent,
-//                actionIconContentColor = MaterialTheme.colorScheme.background,
-//                navigationIconContentColor = MaterialTheme.colorScheme.background,
-//            ),
-//            actions = {
-//                IconButton(
-//                    onClick = onClickEdit,
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.Edit, contentDescription = "edit"
-//                    )
-//                }
-//                IconButton(
-//                    onClick = {
-////                              DropdownMenu(expanded = true, onDismissRequest = { /*TODO*/ }) {
-////                                  DropdownMenuItem(
-////                                      text = { Text(text = "Settings") },
-////                                      onClick = { /*TODO*/ })
-////                              }
-//                        /*TODO: sign-out*/
-//                    },
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.MoreVert,
-//                        contentDescription = null,
-//                    )
-//                }
-//            },
-//            navigationIcon = {
-//                IconButton(
-//                    onClick = { /*TODO*/ },
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.AutoMirrored.Default.ArrowBackIos,
-//                        contentDescription = null
-//                    )
-//                }
-//            },
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .statusBarsPadding(),
-//        )
 
         Column(
             modifier = Modifier

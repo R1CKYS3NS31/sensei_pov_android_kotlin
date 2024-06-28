@@ -37,9 +37,10 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.pov.R
-import com.example.pov.ui.design.component.pov.PoVCreateFab
+import com.example.pov.ui.design.component.pov.PoVFab
 import com.example.pov.ui.feature.pov.navigation.navigateToPovAddEdit
 import com.example.pov.ui.navigation.main.PoVNavOptions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -53,8 +54,7 @@ fun HomeRoute(
 
     ) {
     HomeScreen(
-        viewModel = viewModel,
-        navHostController = navHostController
+        viewModel = viewModel, navHostController = navHostController
     )
 }
 
@@ -86,20 +86,17 @@ fun HomeScreen(
         !isSyncing && !isHomeUiStateLoading
     }
 
-    Scaffold(
-        floatingActionButton = {
-            PoVCreateFab(
-                modifier = Modifier,
-                onClickCreatePoV = {
-                    navHostController.navigateToPovAddEdit(
-                        /* navOptions */
+    Scaffold(floatingActionButton = {
+        PoVFab(
+            modifier = Modifier, onClickPoVFab = {
+                navHostController.navigateToPovAddEdit(
+                    navOptions = PoVNavOptions.topLevelNavOptionsExclusive(
+                        navHostController.graph.findStartDestination().id
                     )
-                },
-                icon = Icons.Filled.Add,
-                text = R.string.create_pov
-            )
-        }
-    ) { paddingValues ->
+                )
+            }, icon = Icons.Filled.Add, text = R.string.create_pov
+        )
+    }) { paddingValues ->
         HomeBody(
             modifier = Modifier
                 .fillMaxSize()
