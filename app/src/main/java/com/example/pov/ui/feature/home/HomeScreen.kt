@@ -97,12 +97,6 @@ fun HomeScreen(
             }, icon = Icons.Filled.Add, text = R.string.create_pov
         )
     }) { paddingValues ->
-        HomeBody(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues), homeUiState = homeUiState
-        )
-
         AnimatedVisibility(
             visible = isSyncing || isHomeUiStateLoading,
             enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
@@ -122,6 +116,11 @@ fun HomeScreen(
             }
         }
         NotificationPermissionEffect()
+        HomeBody(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues), homeUiState = homeUiState
+        )
     }
 }
 

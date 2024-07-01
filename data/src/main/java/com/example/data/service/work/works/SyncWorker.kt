@@ -10,6 +10,7 @@ import androidx.work.WorkerParameters
 import com.example.data.common.dispatcher.Dispatcher
 import com.example.data.common.dispatcher.PoVDispatchers
 import com.example.data.common.util.datasync.Synchronizer
+import com.example.data.data.repository.pov.PoVRepository
 import com.example.data.data.repository.user.UserRepository
 import com.example.data.service.work.notification.syncConstraints
 import com.example.data.service.work.notification.syncForegroundInfo
@@ -27,16 +28,18 @@ class SyncWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     @Dispatcher(PoVDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val syncSubscriber: SyncSubscriber,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val poVRepository: PoVRepository
 ) : CoroutineWorker(context, workerParameters), Synchronizer {
     override suspend fun getForegroundInfo(): ForegroundInfo = context.syncForegroundInfo()
 
     override suspend fun doWork(): Result = withContext(ioDispatcher) {
         syncSubscriber.subscribe()
 
-        val syncedSuccessfully = awaitAll(/* repos.sync*/
-            async {
+        val syncedSuccessfully = awaitAll(
+            async { /* repos.sync*/
                 userRepository.sync()
+                poVRepository.sync()
             }).all { it }
         if (syncedSuccessfully) {
             Result.success()
