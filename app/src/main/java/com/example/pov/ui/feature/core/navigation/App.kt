@@ -14,6 +14,7 @@ import com.example.pov.ui.feature.catalog.navigation.catalogScreen
 import com.example.pov.ui.feature.core.AppRoute
 import com.example.pov.ui.feature.home.navigation.homeNavigationRoute
 import com.example.pov.ui.feature.home.navigation.homeScreen
+import com.example.pov.ui.feature.pov.navigation.poVAddEditScreen
 import com.example.pov.ui.feature.profile.navigation.editProfileScreen
 import com.example.pov.ui.feature.profile.navigation.profileScreen
 
@@ -29,13 +30,16 @@ fun MainNavHost(navHostController: NavHostController) {
         startDestination = homeNavigationRoute,
         route = appNavigationRoute
     ) {
+        signInScreen(navHostController)
+        signUpScreen(navHostController)
+
         homeScreen(navHostController)
         catalogScreen(navHostController)
         profileScreen(navHostController)
         editProfileScreen(navHostController)
 
-        signInScreen(navHostController)
-        signUpScreen(navHostController)
+        poVAddEditScreen(navHostController)
+
     }
 }
 

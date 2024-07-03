@@ -35,14 +35,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.pov.R
 import com.example.pov.ui.design.component.pov.PoVFab
 import com.example.pov.ui.feature.pov.navigation.navigateToPovAddEdit
+import com.example.pov.ui.feature.pov.screen.PoVAddEditScreen
 import com.example.pov.ui.navigation.main.PoVNavOptions
+import com.example.pov.ui.theme.PoVTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -164,5 +168,14 @@ private fun NotificationPermissionEffect() {
         if (status is PermissionStatus.Denied && !status.shouldShowRationale) {
             notificationsPermissionState.launchPermissionRequest()
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    PoVTheme {
+        NotificationPermissionEffect()
     }
 }

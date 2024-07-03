@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -78,23 +80,23 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                             contentDescription = stringResource(id = R.string.savePoV)
                         )
                     }
-//                IconButton(
-//                    onClick = {
-////                              DropdownMenu(expanded = true, onDismissRequest = { /*TODO*/ }) {
-////                                  DropdownMenuItem(
-////                                      text = { Text(text = "Settings") },
-////                                      onClick = { /*TODO*/ })
-////                              }
-//                        /*TODO: sign-out*/
-//                    },
-//                ) {
-//                    Icon(
-//                        imageVector = Icons.Filled.MoreVert,
-//                        contentDescription = null,
-//                    )
-//                }
+                    IconButton(
+                        onClick = {
+//                            DropdownMenu(expanded = true, onDismissRequest = { /*TODO*/ }) {
+//                                DropdownMenuItem(
+//                                    text = { Text(text = "Settings") },
+//                                    onClick = { /*TODO*/ })
+//                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = null,
+                        )
+                    }
 
                 },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 onClickBack = {
                     coroutineScope.launch {
                         viewModel.editPoV(poVUiState.poV)

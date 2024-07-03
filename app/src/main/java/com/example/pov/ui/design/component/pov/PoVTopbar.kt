@@ -26,18 +26,18 @@ fun PoVTopAppBar(
     title: Int = R.string.app_name,
     actions: @Composable RowScope.() -> Unit = {},
     onClickBack: () -> Unit = {},
-    scrollBehavior: TopAppBarScrollBehavior? = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    scrollBehavior: TopAppBarScrollBehavior? = TopAppBarDefaults.pinnedScrollBehavior(),
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
         titleContentColor = MaterialTheme.colorScheme.background,
-        containerColor = Color.Transparent,
+        containerColor = MaterialTheme.colorScheme.onBackground,
         actionIconContentColor = MaterialTheme.colorScheme.background,
         navigationIconContentColor = MaterialTheme.colorScheme.background,
     )
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier
-            .fillMaxWidth()
-            .statusBarsPadding(),
+            .fillMaxWidth(),
+//            .statusBarsPadding(),
         title = { stringResource(id = title) },
         colors = colors,
         actions = actions,

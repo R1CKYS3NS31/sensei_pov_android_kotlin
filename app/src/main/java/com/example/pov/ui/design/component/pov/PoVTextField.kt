@@ -33,17 +33,10 @@ fun PoVTitle(
             )
         },
         placeholder = {
-            Text(text = stringResource(id = R.string.email_example))
+            Text(text = stringResource(id = R.string.title))
         },
         shape = MaterialTheme.shapes.large,
         isError = isError,
-        trailingIcon = @Composable {
-            Icon(
-                imageVector = Icons.Outlined.RemoveRedEye, contentDescription = stringResource(
-                    id = R.string.title
-                )
-            )
-        },
         colors = TextFieldDefaults.colors(),
         keyboardOptions = KeyboardOptions.Default.copy(
             /* imeAction */
@@ -81,14 +74,6 @@ fun PoVSubtitle(
         },
         shape = MaterialTheme.shapes.large,
         isError = isError,
-        trailingIcon = @Composable {
-            Icon(
-                imageVector = Icons.Outlined.RemoveRedEye,
-                contentDescription = stringResource(
-                    id = R.string.subtitle
-                )
-            )
-        },
         colors = TextFieldDefaults.colors(),
         keyboardOptions = KeyboardOptions.Default.copy(
             /* imeAction */
@@ -123,6 +108,7 @@ fun PoVPoints(
         placeholder = {
             Text(text = stringResource(id = R.string.points))
         },
+        singleLine = false,
         shape = MaterialTheme.shapes.large,
         isError = isError,
         colors = TextFieldDefaults.colors(),

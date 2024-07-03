@@ -13,7 +13,7 @@ fun NavController.navigateToPovAddEdit(navOptions: NavOptions? = null) {
     this.navigate(route = poVAddEditNavigationRoute, navOptions = navOptions)
 }
 
-fun NavGraphBuilder.poVAddEdit(navHostController: NavHostController) {
+fun NavGraphBuilder.poVAddEditScreen(navHostController: NavHostController) {
     composable(route = poVAddEditNavigationRoute) {
         PovAddEditRoute(navHostController = navHostController)
     }
