@@ -29,6 +29,7 @@ import com.example.pov.ui.feature.auth.navigation.navigateToSignUp
 import com.example.pov.ui.feature.auth.view_model.AuthViewModel
 import com.example.pov.ui.feature.auth.view_model.SignInUiState
 import com.example.pov.ui.feature.core.navigation.navigateToApp
+import com.example.pov.ui.navigation.main.PoVNavOptions
 import kotlinx.coroutines.launch
 
 @Composable
@@ -66,14 +67,9 @@ fun SignInScreen(navHostController: NavHostController, viewModel: AuthViewModel)
             ContinueAsGuestButton {
                 coroutineScope.launch {
                     navHostController.navigateToApp(
-                        navOptions = navOptions {
-                            popUpTo(navHostController.graph.findStartDestination().id) {
-                                saveState = true
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
+                        navOptions = PoVNavOptions.topLevelNavOptionsExclusive(
+                            navHostController.graph.findStartDestination().id
+                        )
                     )
                 }
             }

@@ -24,7 +24,7 @@ fun PoVTitle(
 ) {
     TextField(
         value = title,
-        onValueChange = { onValueChange(it.trim()) },
+        onValueChange = { onValueChange(it) },
         singleLine = true,
         label = {
             Text(
@@ -38,15 +38,6 @@ fun PoVTitle(
         shape = MaterialTheme.shapes.large,
         isError = isError,
         colors = TextFieldDefaults.colors(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            /* imeAction */
-            keyboardType = KeyboardType.Text
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                /* call the imeAction */
-            }
-        ),
         modifier = modifier
     )
 }
@@ -61,7 +52,7 @@ fun PoVSubtitle(
 ) {
     TextField(
         value = subtitle,
-        onValueChange = { onValueChange(it.trim()) },
+        onValueChange = { onValueChange(it) },
         maxLines = 2,
         label = {
             Text(
@@ -75,15 +66,6 @@ fun PoVSubtitle(
         shape = MaterialTheme.shapes.large,
         isError = isError,
         colors = TextFieldDefaults.colors(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            /* imeAction */
-            keyboardType = KeyboardType.Text
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                /* call the imeAction */
-            }
-        ),
         modifier = modifier
     )
 }
@@ -98,7 +80,7 @@ fun PoVPoints(
 ) {
     TextField(
         value = points,
-        onValueChange = { onValueChange(it.trim()) },
+        onValueChange = { onValueChange(it) },
         label = {
             Text(
                 text = stringResource(id = R.string.points),
@@ -108,19 +90,9 @@ fun PoVPoints(
         placeholder = {
             Text(text = stringResource(id = R.string.points))
         },
-        singleLine = false,
         shape = MaterialTheme.shapes.large,
         isError = isError,
         colors = TextFieldDefaults.colors(),
-        keyboardOptions = KeyboardOptions.Default.copy(
-            /* imeAction */
-            keyboardType = KeyboardType.Text
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                /* call the imeAction */
-            }
-        ),
         modifier = modifier
     )
 }

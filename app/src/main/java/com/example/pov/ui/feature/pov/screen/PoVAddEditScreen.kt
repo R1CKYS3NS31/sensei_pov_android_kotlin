@@ -100,7 +100,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                 onClickBack = {
                     coroutineScope.launch {
                         viewModel.editPoV(poVUiState.poV)
-                        navHostController.previousBackStackEntry
+                        navHostController.navigateUp()
                     }
                 },
             )
@@ -139,7 +139,7 @@ fun PoVAddEditBody(
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun  PoVAddEditScreenPreview() {
     PoVTheme {
         PoVAddEditScreen(viewModel = hiltViewModel(), navHostController = rememberNavController())
     }

@@ -54,50 +54,91 @@ class PoVDatasource @Inject constructor(
     override suspend fun addPoV(newPoV: NewPoV): Flow<PoVResult<PoV>> {
         return flow {
             emit(PoVResult.Loading)
-            if (networkMonitor.isOnline.first()) {
-                flowOf(poVApiService.createPoV(newPoV.asRemote())).asPoVResult().map { response ->
-                    when (response) {
-                        is PoVResult.Success -> {
-                            val povRemote = response.data
-                            poVDao.upsertPoV(povRemote.asPoV().asEntity())
-                            emit(PoVResult.Success(povRemote.asPoV()))
-                        }
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    flowOf(poVApiService.createPoV(newPoV.asRemote())).asPoVResult()
+                        .map { response ->
+                            when (response) {
+                                is PoVResult.Success -> {
+                                    val povRemote = response.data
+                                    poVDao.upsertPoV(povRemote.asPoV().asEntity())
+                                    emit(PoVResult.Success(povRemote.asPoV()))
+                                }
 
-                        is PoVResult.Error -> {
-                            Log.d(
-                                TAG,
-                                "create PoV error: ${response.responseErrorMessage}",
-                                response.throwable
-                            )
-                            emit(
-                                PoVResult.Error(
-                                    throwable = response.throwable,
-                                    responseErrorMessage = response.responseErrorMessage
-                                )
-                            )
-                        }
+                                is PoVResult.Error -> {
+                                    Log.d(
+                                        TAG,
+                                        "create PoV error: ${response.responseErrorMessage}",
+                                        response.throwable
+                                    )
+                                    emit(
+                                        PoVResult.Error(
+                                            throwable = response.throwable,
+                                            responseErrorMessage = response.responseErrorMessage
+                                        )
+                                    )
+                                }
 
-                        is PoVResult.Loading -> emit(PoVResult.Loading)
-                    }
-                }.collect()
-            } else {
-                poVDao.insertPoV(newPoV.asPoV().asEntity())
-                emit(
-                    PoVResult.Error(
-                        throwable = null, responseErrorMessage = ErrorResponse(
-                            errorMessage = "no network", errorCode = 400
+                                is PoVResult.Loading -> emit(PoVResult.Loading)
+                            }
+                        }.collect()
+                } else {
+                    poVDao.insertPoV(newPoV.asPoV().asEntity())
+                    emit(
+                        PoVResult.Error(
+                            throwable = null, responseErrorMessage = ErrorResponse(
+                                errorMessage = "no network", errorCode = 400
+                            )
                         )
                     )
-                )
+                }
             }
-
         }.catch { throwable: Throwable ->
             emit(throwable.asPoVError())
         }.flowOn(dispatcher)
     }
 
     override suspend fun addEditPoV(newPoV: NewPoV): Flow<PoVResult<PoV>> {
-        TODO("Not yet implemented")
+       return flow {
+           networkMonitor.isOnline.collect{ isOnline ->
+               if (isOnline){
+                   flowOf(poVApiService.updatePoV(newPoV.asPoV().asRemote())).asPoVResult().map { response ->
+                       when (response) {
+                           is PoVResult.Success -> {
+                               val poVRemote = response.data
+                               poVDao.updatePoV(poVRemote.asPoV().asEntity())
+                               emit(PoVResult.Success(poVRemote.asPoV()))
+                           }
+
+                           is PoVResult.Error -> {
+                               Log.d(
+                                   TAG,
+                                   "update PoV error: ${response.responseErrorMessage}",
+                                   response.throwable
+                               )
+                               emit(
+                                   PoVResult.Error(
+                                       throwable = response.throwable,
+                                       responseErrorMessage = response.responseErrorMessage
+                                   )
+                               )
+                           }
+
+                           is PoVResult.Loading -> emit(PoVResult.Loading)
+                       }
+                   }.collect()
+               } else {
+                   poVDao.upsertPoV(newPoV.asPoV().asEntity())
+                   emit(
+                       PoVResult.Error(
+                           throwable = null, responseErrorMessage = ErrorResponse(
+                               errorMessage = "no network", errorCode = 400
+                           )
+                       )
+                   )
+               }
+           }
+       }
     }
 
     override fun getAllPoVs(): Flow<PoVResult<List<PoV>>> {
@@ -149,32 +190,41 @@ class PoVDatasource @Inject constructor(
     override fun getPoV(poVId: String): Flow<PoVResult<PoV>> {
         return flow {
             emit(PoVResult.Loading)
-            flowOf(poVApiService.readPoV(poVId)).asPoVResult().map { response ->
-                when (response) {
-                    is PoVResult.Success -> {
-                        val poVRemote = response.data
-                        poVDao.updatePoV(poVRemote.asPoV().asEntity())
-                        emit(PoVResult.Success(poVRemote.asPoV()))
-                    }
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    flowOf(poVApiService.readPoV(poVId)).asPoVResult().map { response ->
+                        when (response) {
+                            is PoVResult.Success -> {
+                                val poVRemote = response.data
+                                poVDao.updatePoV(poVRemote.asPoV().asEntity())
+                                emit(PoVResult.Success(poVRemote.asPoV()))
+                            }
 
-                    is PoVResult.Error -> {
-                        Log.d(
-                            TAG,
-                            "get PoV error: ${response.responseErrorMessage}",
-                            response.throwable
-                        )
-                        emit(
-                            PoVResult.Error(
-                                throwable = response.throwable,
-                                responseErrorMessage = response.responseErrorMessage
-                            )
-                        )
-                    }
+                            is PoVResult.Error -> {
+                                Log.d(
+                                    TAG,
+                                    "get PoV error: ${response.responseErrorMessage}",
+                                    response.throwable
+                                )
+                                emit(
+                                    PoVResult.Error(
+                                        throwable = response.throwable,
+                                        responseErrorMessage = response.responseErrorMessage
+                                    )
+                                )
+                            }
 
-                    is PoVResult.Loading -> emit(PoVResult.Loading)
+                            is PoVResult.Loading -> emit(PoVResult.Loading)
+                        }
+                    }.collect()
+                } else {
+                    poVDao.getPoV(poVId).map(PoVEntity::asPoV).asPoVResult()
+                        .collect { poV ->
+                            emit(poV)
+                        }
                 }
-            }.collect()
-            poVDao.getPoV(poVId).map { it.asPoV() }.asPoVResult()
+            }
+
         }.catch {
             emit(it.asPoVError())
         }.flowOn(dispatcher)
@@ -183,32 +233,40 @@ class PoVDatasource @Inject constructor(
     override suspend fun editPoV(poV: PoV): Flow<PoVResult<PoV>> {
         return flow {
             emit(PoVResult.Loading)
-            flowOf(poVApiService.updatePoV(poV.asRemote())).asPoVResult().map { response ->
-                when (response) {
-                    is PoVResult.Success -> {
-                        val poVRemote = response.data
-                        poVDao.updatePoV(poVRemote.asPoV().asEntity())
-                        emit(PoVResult.Success(poVRemote.asPoV()))
-                    }
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    flowOf(poVApiService.updatePoV(poV.asRemote())).asPoVResult().map { response ->
+                        when (response) {
+                            is PoVResult.Success -> {
+                                val poVRemote = response.data
+                                poVDao.updatePoV(poVRemote.asPoV().asEntity())
+                                emit(PoVResult.Success(poVRemote.asPoV()))
+                            }
 
-                    is PoVResult.Error -> {
-                        Log.d(
-                            TAG,
-                            "update PoV error: ${response.responseErrorMessage}",
-                            response.throwable
-                        )
-                        emit(
-                            PoVResult.Error(
-                                throwable = response.throwable,
-                                responseErrorMessage = response.responseErrorMessage
-                            )
-                        )
-                    }
+                            is PoVResult.Error -> {
+                                Log.d(
+                                    TAG,
+                                    "update PoV error: ${response.responseErrorMessage}",
+                                    response.throwable
+                                )
+                                emit(
+                                    PoVResult.Error(
+                                        throwable = response.throwable,
+                                        responseErrorMessage = response.responseErrorMessage
+                                    )
+                                )
+                            }
 
-                    is PoVResult.Loading -> emit(PoVResult.Loading)
+                            is PoVResult.Loading -> emit(PoVResult.Loading)
+                        }
+                    }.collect()
+                } else {
+                    poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult()
+                        .collect {
+                            emit(it)
+                        }
                 }
-            }.collect()
-            poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult()
+            }
         }.catch {
             emit(it.asPoVError())
         }.flowOn(dispatcher)
@@ -217,32 +275,43 @@ class PoVDatasource @Inject constructor(
     override suspend fun delete(poV: PoV): Flow<PoVResult<PoV>> {
         return flow {
             emit(PoVResult.Loading)
-            flowOf(poVApiService.deletePoV(poV.id)).asPoVResult().map { response ->
-                when (response) {
-                    is PoVResult.Success -> {
-                        val povRemoteDeleted = response.data
-                        poVDao.deletePoV(povRemoteDeleted.asPoV().asEntity())
-                        emit(PoVResult.Success(povRemoteDeleted.asPoV()))
-                    }
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    flowOf(poVApiService.deletePoV(poV.id)).asPoVResult().map { response ->
+                        when (response) {
+                            is PoVResult.Success -> {
+                                val povRemoteDeleted = response.data
+                                poVDao.deletePoV(povRemoteDeleted.asPoV().asEntity())
+                                emit(PoVResult.Success(povRemoteDeleted.asPoV()))
+                            }
 
-                    is PoVResult.Error -> {
-                        Log.d(
-                            TAG,
-                            "delete PoV error: ${response.responseErrorMessage}",
-                            response.throwable
-                        )
-                        emit(
-                            PoVResult.Error(
-                                throwable = response.throwable,
-                                responseErrorMessage = response.responseErrorMessage
+                            is PoVResult.Error -> {
+                                Log.d(
+                                    TAG,
+                                    "delete PoV error: ${response.responseErrorMessage}",
+                                    response.throwable
+                                )
+                                emit(
+                                    PoVResult.Error(
+                                        throwable = response.throwable,
+                                        responseErrorMessage = response.responseErrorMessage
+                                    )
+                                )
+                            }
+                            is PoVResult.Loading -> emit(PoVResult.Loading)
+                        }
+                    }.collect()
+                } else {
+                    poVDao.deletePoV(poV.asEntity())
+                    emit(
+                        PoVResult.Error(
+                            throwable = null, responseErrorMessage = ErrorResponse(
+                                errorMessage = "no network", errorCode = 400
                             )
                         )
-                    }
-
-                    is PoVResult.Loading -> emit(PoVResult.Loading)
+                    )
                 }
-            }.collect()
-            poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult()
+            }
         }.catch {
             emit(it.asPoVError())
         }.flowOn(dispatcher)

@@ -28,10 +28,10 @@ fun PoVTopAppBar(
     onClickBack: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior? = TopAppBarDefaults.pinnedScrollBehavior(),
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        titleContentColor = MaterialTheme.colorScheme.background,
-        containerColor = MaterialTheme.colorScheme.onBackground,
-        actionIconContentColor = MaterialTheme.colorScheme.background,
-        navigationIconContentColor = MaterialTheme.colorScheme.background,
+        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
     )
 ) {
     CenterAlignedTopAppBar(
