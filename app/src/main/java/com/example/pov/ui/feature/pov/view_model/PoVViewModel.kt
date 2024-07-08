@@ -53,7 +53,7 @@ class PoVViewModel @Inject constructor(
         }
     }
 
-    fun addPoVToUiState(newPoV: NewPoV) {
+    fun addPoVUiState(newPoV: NewPoV) {
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(
@@ -66,7 +66,7 @@ class PoVViewModel @Inject constructor(
 
     private fun validatePoVInput(newPoV: NewPoV): Boolean =
         with(newPoV) {
-            !(title.isBlank() || subtitle.isBlank() || points.isBlank() || author.isBlank())
+            !(title.isBlank()  || points.isBlank() || author.isBlank())
         }
 
     fun savePoV(newPoV: NewPoV) {
@@ -149,7 +149,7 @@ class PoVViewModel @Inject constructor(
             }
         }
     }
-//
+
 //    init {
 //        viewModelScope.launch {
 //            poVRepository.getAllPoVs().map { result: PoVResult<List<PoV>> ->

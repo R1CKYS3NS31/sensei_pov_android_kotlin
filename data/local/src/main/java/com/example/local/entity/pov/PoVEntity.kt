@@ -9,7 +9,6 @@ data class PoVEntity(
     val id: String,
     @PrimaryKey
     val title: String,
-    val subtitle: String,
     val points: String,
     val attachment: String? = null,
     val author: String,

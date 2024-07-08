@@ -22,6 +22,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -75,22 +76,12 @@ fun HomeScreen(
         SnackbarHostState()
     }
 
-    LaunchedEffect(key1 = errorMessage) {
-        if (errorMessage.isNotEmpty()) {
-            snackBarHostState.showSnackbar(
-                message = errorMessage,
-                duration = SnackbarDuration.Long,
-                withDismissAction = true,
-                actionLabel = "OK"
-            )
-        }
-    }
-
     ReportDrawnWhen {
         !isSyncing && !isHomeUiStateLoading
     }
 
-    Scaffold(floatingActionButton = {
+    Scaffold(
+        floatingActionButton = {
         PoVFab(
             modifier = Modifier, onClickPoVFab = {
                 navHostController.navigateToPovAddEdit(
@@ -98,9 +89,14 @@ fun HomeScreen(
                         navHostController.graph.findStartDestination().id
                     )
                 )
-            }, icon = Icons.Filled.Add, text = R.string.create_pov
+            },
+            icon = Icons.Filled.Add, text = R.string.create_pov
         )
-    }) { paddingValues ->
+    },
+      snackbarHost = {
+          SnackbarHost(hostState = snackBarHostState)
+      }
+    ) { paddingValues ->
         AnimatedVisibility(
             visible = isSyncing || isHomeUiStateLoading,
             enter = slideInVertically(initialOffsetY = { fullHeight -> -fullHeight }) + fadeIn(),
@@ -125,6 +121,17 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues), homeUiState = homeUiState
         )
+
+        LaunchedEffect(key1 = errorMessage) {
+            if (errorMessage.isNotEmpty()) {
+                snackBarHostState.showSnackbar(
+                    message = errorMessage,
+                    duration = SnackbarDuration.Long,
+                    withDismissAction = true,
+                    actionLabel = "OK"
+                )
+            }
+        }
     }
 }
 

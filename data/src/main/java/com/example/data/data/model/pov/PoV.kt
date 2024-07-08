@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter
 data class PoV(
     val id: String = "",
     val title: String = "",
-    val subtitle: String = "",
     val points: String = "",
     val attachment: String? = null,
     val author: String,
@@ -21,7 +20,6 @@ data class PoV(
 
 data class NewPoV(
     val title: String = "",
-    val subtitle: String = "",
     val points: String = "",
     val attachment: String? = null,
     val author: String
@@ -29,7 +27,6 @@ data class NewPoV(
 
 fun PoV.asNewPoV(): NewPoV = NewPoV(
     title = title,
-    subtitle = subtitle,
     attachment = attachment,
     author = author,
     points = points
@@ -37,7 +34,6 @@ fun PoV.asNewPoV(): NewPoV = NewPoV(
 
 fun NewPoV.asPoV(): PoV = PoV(
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,
@@ -47,7 +43,6 @@ fun NewPoV.asPoV(): PoV = PoV(
 fun PoV.asEntity(): PoVEntity = PoVEntity(
     id = id,
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,
@@ -58,7 +53,6 @@ fun PoV.asEntity(): PoVEntity = PoVEntity(
 fun PoVEntity.asPoV(): PoV = PoV(
     id = id,
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,
@@ -69,7 +63,6 @@ fun PoVEntity.asPoV(): PoV = PoV(
 /* remote */
 fun NewPoV.asRemote() = NewPoVRemoteModel(
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author
@@ -78,7 +71,6 @@ fun NewPoV.asRemote() = NewPoVRemoteModel(
 fun PoVEntity.asRemote(): PoVRemoteModel = PoVRemoteModel(
     id = id,
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,
@@ -89,7 +81,6 @@ fun PoVEntity.asRemote(): PoVRemoteModel = PoVRemoteModel(
 fun PoVRemoteModel.asPoV(): PoV = PoV(
     id = id,
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,
@@ -100,7 +91,6 @@ fun PoVRemoteModel.asPoV(): PoV = PoV(
 fun PoV.asRemote(): PoVRemoteModel = PoVRemoteModel(
     id = id,
     title = title,
-    subtitle = subtitle,
     points = points,
     attachment = attachment,
     author = author,

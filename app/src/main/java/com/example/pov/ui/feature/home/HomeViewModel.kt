@@ -97,7 +97,7 @@ fun LazyGridScope.poVGridList(
             items(items = homeUiState.povs, key = {
                 it.id
             }, contentType = { "PoVs" }) { pov ->
-                Text(text = "user: ${pov.title}")
+                Text(text = "pov: ${pov.title}")
             }
         }
     }

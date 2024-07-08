@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -54,15 +55,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
         SnackbarHostState()
     }
     val errorMessage by viewModel.errorMessage.collectAsState()
-    LaunchedEffect(key1 = errorMessage) {
-        if (errorMessage.isNotBlank()) {
-            snackBarHostState.showSnackbar(
-                message = errorMessage, duration = SnackbarDuration.Long,
-                withDismissAction = true,
-                actionLabel = "OK"
-            )
-        }
-    }
+
     Scaffold(
         topBar = {
             PoVTopAppBar(
@@ -74,6 +67,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                                 viewModel.savePoV(poVUiState.poV.asNewPoV())
                             }
                         },
+                        enabled = poVUiState.isEditEntryValid
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Save,
@@ -104,6 +98,9 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         }
     ) { paddingValues ->
         PoVAddEditBody(
@@ -113,6 +110,15 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
             poVUiState = poVUiState,
             onValueChange = viewModel::editPoVUiState,
         )
+        LaunchedEffect(key1 = errorMessage) {
+            if (errorMessage.isNotBlank()) {
+                snackBarHostState.showSnackbar(
+                    message = errorMessage, duration = SnackbarDuration.Long,
+                    withDismissAction = true,
+                    actionLabel = "OK"
+                )
+            }
+        }
     }
 }
 
@@ -129,7 +135,7 @@ fun PoVAddEditBody(
             .verticalScroll(rememberScrollState())
     ) {
         PoVForm(
-            modifier = Modifier,
+            modifier = Modifier.fillMaxSize(),
             poV = poVUiState.poV,
             onValueChange = onValueChange,
             isError = !poVUiState.isEditEntryValid
@@ -141,6 +147,6 @@ fun PoVAddEditBody(
 @Composable
 fun  PoVAddEditScreenPreview() {
     PoVTheme {
-        PoVAddEditScreen(viewModel = hiltViewModel(), navHostController = rememberNavController())
+//        PoVAddEditScreen(viewModel = hiltViewModel(), navHostController = rememberNavController())
     }
 }

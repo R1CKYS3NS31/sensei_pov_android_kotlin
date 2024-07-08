@@ -8,7 +8,6 @@ data class PoVRemoteModel(
     @SerialName("_id")
     val id: String,
     val title: String,
-    val subtitle: String,
     val points: String,
     val attachment: String? = null,
     val author: String,
@@ -20,7 +19,6 @@ data class PoVRemoteModel(
 @Serializable
 data class NewPoVRemoteModel(
     val title: String,
-    val subtitle: String = "",
     val points: String,
     val attachment: String? = null,
     val author: String
