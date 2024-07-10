@@ -99,46 +99,48 @@ class PoVDatasource @Inject constructor(
     }
 
     override suspend fun addEditPoV(newPoV: NewPoV): Flow<PoVResult<PoV>> {
-       return flow {
-           networkMonitor.isOnline.collect{ isOnline ->
-               if (isOnline){
-                   flowOf(poVApiService.updatePoV(newPoV.asPoV().asRemote())).asPoVResult().map { response ->
-                       when (response) {
-                           is PoVResult.Success -> {
-                               val poVRemote = response.data
-                               poVDao.updatePoV(poVRemote.asPoV().asEntity())
-                               emit(PoVResult.Success(poVRemote.asPoV()))
-                           }
+        return flow {
+            emit(PoVResult.Loading)
+            networkMonitor.isOnline.collect { isOnline ->
+                if (isOnline) {
+                    flowOf(poVApiService.updatePoV(newPoV.asPoV().asRemote())).asPoVResult()
+                        .map { response ->
+                            when (response) {
+                                is PoVResult.Success -> {
+                                    val poVRemote = response.data
+                                    poVDao.updatePoV(poVRemote.asPoV().asEntity())
+                                    emit(PoVResult.Success(poVRemote.asPoV()))
+                                }
 
-                           is PoVResult.Error -> {
-                               Log.d(
-                                   TAG,
-                                   "update PoV error: ${response.responseErrorMessage}",
-                                   response.throwable
-                               )
-                               emit(
-                                   PoVResult.Error(
-                                       throwable = response.throwable,
-                                       responseErrorMessage = response.responseErrorMessage
-                                   )
-                               )
-                           }
+                                is PoVResult.Error -> {
+                                    Log.d(
+                                        TAG,
+                                        "update PoV error: ${response.responseErrorMessage}",
+                                        response.throwable
+                                    )
+                                    emit(
+                                        PoVResult.Error(
+                                            throwable = response.throwable,
+                                            responseErrorMessage = response.responseErrorMessage
+                                        )
+                                    )
+                                }
 
-                           is PoVResult.Loading -> emit(PoVResult.Loading)
-                       }
-                   }.collect()
-               } else {
-                   poVDao.upsertPoV(newPoV.asPoV().asEntity())
-                   emit(
-                       PoVResult.Error(
-                           throwable = null, responseErrorMessage = ErrorResponse(
-                               errorMessage = "no network", errorCode = 400
-                           )
-                       )
-                   )
-               }
-           }
-       }
+                                is PoVResult.Loading -> emit(PoVResult.Loading)
+                            }
+                        }.collect()
+                } else {
+                    poVDao.upsertPoV(newPoV.asPoV().asEntity())
+                    emit(
+                        PoVResult.Error(
+                            throwable = null, responseErrorMessage = ErrorResponse(
+                                errorMessage = "no network", errorCode = 400
+                            )
+                        )
+                    )
+                }
+            }
+        }
     }
 
     override fun getAllPoVs(): Flow<PoVResult<List<PoV>>> {
@@ -218,10 +220,9 @@ class PoVDatasource @Inject constructor(
                         }
                     }.collect()
                 } else {
-                    poVDao.getPoV(poVId).map(PoVEntity::asPoV).asPoVResult()
-                        .collect { poV ->
-                            emit(poV)
-                        }
+                    poVDao.getPoV(poVId).map(PoVEntity::asPoV).asPoVResult().collect { poV ->
+                        emit(poV)
+                    }
                 }
             }
 
@@ -261,10 +262,9 @@ class PoVDatasource @Inject constructor(
                         }
                     }.collect()
                 } else {
-                    poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult()
-                        .collect {
-                            emit(it)
-                        }
+                    poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult().collect {
+                        emit(it)
+                    }
                 }
             }
         }.catch {
@@ -298,6 +298,7 @@ class PoVDatasource @Inject constructor(
                                     )
                                 )
                             }
+
                             is PoVResult.Loading -> emit(PoVResult.Loading)
                         }
                     }.collect()
@@ -318,8 +319,9 @@ class PoVDatasource @Inject constructor(
     }
 
     override suspend fun syncWith(synchronizer: Synchronizer): Boolean {
-        return synchronizer.dataSynchronizer(remoteData = poVApiService.readPoVs()
-            .map(PoVRemoteModel::asPoV).toSet(),
+        return synchronizer.dataSynchronizer(
+            remoteData = poVApiService.readPoVs()
+                .map(PoVRemoteModel::asPoV).toSet(),
             localData = poVDao.getAllPoVs().first().map(PoVEntity::asPoV).toSet(),
             localModelUpdater = {
                 poVDao.upsertPoV(it.asEntity())

@@ -1,9 +1,15 @@
 package com.example.pov.ui.feature.home
 
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.common.result.ErrorResponse
@@ -41,7 +47,6 @@ class HomeViewModel @Inject constructor(
         initialValue = ""
     )
 
-
     val homeUiState: StateFlow<HomeUiState> by lazy {
         poVRepository.getAllPoVs().map { result: PoVResult<List<PoV>> ->
             when (result) {
@@ -68,14 +73,12 @@ class HomeViewModel @Inject constructor(
                     HomeUiState.Loading
                 }
             }
-
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(TIME_IN_MILLIS),
             initialValue = HomeUiState.Loading
         )
     }
-
 
     companion object {
         private const val TIME_IN_MILLIS = 5_000L
@@ -97,12 +100,25 @@ fun LazyGridScope.poVGridList(
             items(items = homeUiState.povs, key = {
                 it.id
             }, contentType = { "PoVs" }) { pov ->
-                Text(text = "pov: ${pov.title}")
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column {
+                        Text(
+                            text = pov.title,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            text = pov.points,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
             }
         }
     }
 }
-
 
 sealed interface HomeUiState {
     data object Loading : HomeUiState
