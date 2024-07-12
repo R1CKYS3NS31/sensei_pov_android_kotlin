@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,15 +52,7 @@ fun SignInScreen(navHostController: NavHostController, viewModel: AuthViewModel)
     }
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    LaunchedEffect(key1 = errorMessage) {
-        if (errorMessage.isNotBlank()) {
-            snackBarHostState.showSnackbar(
-                message = errorMessage, duration = SnackbarDuration.Long,
-                withDismissAction = true,
-                actionLabel = "OK"
-            )
-        }
-    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -73,6 +66,9 @@ fun SignInScreen(navHostController: NavHostController, viewModel: AuthViewModel)
                     )
                 }
             }
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
         }
     ) { paddingValues ->
         SignInBody(
@@ -116,6 +112,15 @@ fun SignInScreen(navHostController: NavHostController, viewModel: AuthViewModel)
                 }
             },
         )
+        LaunchedEffect(key1 = errorMessage) {
+            if (errorMessage.isNotBlank()) {
+                snackBarHostState.showSnackbar(
+                    message = errorMessage, duration = SnackbarDuration.Long,
+                    withDismissAction = true,
+                    actionLabel = "OK"
+                )
+            }
+        }
     }
 }
 

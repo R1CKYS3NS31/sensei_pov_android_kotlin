@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.data.data.model.pov.PoV
 import com.example.data.data.model.pov.asNewPoV
 import com.example.pov.R
@@ -67,7 +66,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                                 viewModel.savePoV(poVUiState.poV.asNewPoV())
                             }
                         },
-                        enabled = poVUiState.isEditEntryValid
+                        enabled = poVUiState.isEntryValid
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Save,
@@ -93,7 +92,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 onClickBack = {
                     coroutineScope.launch {
-                        viewModel.editPoV(poVUiState.poV)
+                        viewModel.addEditPoV(poVUiState.poV)
                         navHostController.navigateUp()
                     }
                 },
@@ -108,7 +107,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                 .fillMaxSize()
                 .padding(paddingValues),
             poVUiState = poVUiState,
-            onValueChange = viewModel::editPoVUiState,
+            onValueChange = viewModel::addEditPoVUiState,
         )
         LaunchedEffect(key1 = errorMessage) {
             if (errorMessage.isNotBlank()) {
@@ -138,7 +137,7 @@ fun PoVAddEditBody(
             modifier = Modifier.fillMaxSize(),
             poV = poVUiState.poV,
             onValueChange = onValueChange,
-            isError = !poVUiState.isEditEntryValid
+            isError = !poVUiState.isEntryValid
         )
     }
 }
