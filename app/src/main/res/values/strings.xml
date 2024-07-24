@@ -33,5 +33,6 @@
     <string name="create_pov">Create PoV</string>
     <string name="fab">Fab</string>
     <string name="message">Message</string>
-    <string name="savePoV">Save new PoV</string>
+    <string name="savePoV">Save PoV</string>
+    <string name="cancel">Cancel</string>
 </resources>

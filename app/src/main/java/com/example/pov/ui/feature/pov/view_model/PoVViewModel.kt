@@ -8,7 +8,6 @@ import com.example.data.common.result.PoVResult
 import com.example.data.data.model.pov.NewPoV
 import com.example.data.data.model.pov.PoV
 import com.example.data.data.model.pov.asNewPoV
-import com.example.data.data.model.pov.asPoV
 import com.example.data.data.repository.pov.PoVRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -42,12 +41,12 @@ class PoVViewModel @Inject constructor(
         initialValue = PoVUiState.Success()
     )
 
-    fun addEditPoVUiState(poV: PoV) {
+    fun editPoVUiState(newPoV: NewPoV) {
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(
-                    poV = poV,
-                    isEntryValid = validatePoVInput(poV.asNewPoV())
+                    newPoV = newPoV,
+                    isEntryValid = validatePoVInput(newPoV)
                 )
             )
         }
@@ -57,7 +56,7 @@ class PoVViewModel @Inject constructor(
         viewModelScope.launch {
             _poVUiState.emit(
                 PoVUiState.Success(
-                    newPoV.asPoV(),
+                    newPoV,
                     isEntryValid = validatePoVInput(newPoV)
                 )
             )
@@ -79,7 +78,7 @@ class PoVViewModel @Inject constructor(
                         when (result) {
                             is PoVResult.Success -> {
                                 _poVUiState.emit(
-                                    PoVUiState.Success(result.data)
+                                    PoVUiState.Success(result.data.asNewPoV())
                                 )
                             }
 
@@ -112,15 +111,15 @@ class PoVViewModel @Inject constructor(
     }
 
 
-    fun addEditPoV(poV: PoV) {
-        if (validatePoVInput(poV.asNewPoV())) {
+    fun editPoV(newPoV: NewPoV) {
+        if (validatePoVInput(newPoV)) {
             viewModelScope.launch {
-                poVRepository.addEditPoV(poV.asNewPoV())
+                poVRepository.addEditPoV(newPoV)
                     .map { result: PoVResult<PoV> ->
                         when (result) {
                             is PoVResult.Success -> {
                                 _poVUiState.emit(
-                                    PoVUiState.Success(result.data)
+                                    PoVUiState.Success(result.data.asNewPoV())
                                 )
                             }
 
@@ -160,7 +159,7 @@ class PoVViewModel @Inject constructor(
 sealed interface PoVUiState {
     data object Loading : PoVUiState
     data class Success(
-        val poV: PoV = PoV(author = ""),
+        val newPoV: NewPoV = NewPoV(author = ""),
         val isEntryValid: Boolean = false
     ) : PoVUiState
 

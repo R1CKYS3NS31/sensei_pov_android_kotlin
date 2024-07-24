@@ -28,8 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.data.data.model.pov.PoV
-import com.example.data.data.model.pov.asNewPoV
+import com.example.data.data.model.pov.NewPoV
 import com.example.pov.R
 import com.example.pov.ui.design.component.pov.PoVForm
 import com.example.pov.ui.design.component.pov.PoVTopAppBar
@@ -39,15 +38,15 @@ import com.example.pov.ui.theme.PoVTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun PovAddEditRoute(
+fun PovEditRoute(
     navHostController: NavHostController, viewModel: PoVViewModel = hiltViewModel()
 ) {
-    PoVAddEditScreen(viewModel = viewModel, navHostController)
+    PoVEditScreen(viewModel = viewModel, navHostController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostController) {
+fun PoVEditScreen(viewModel: PoVViewModel, navHostController: NavHostController) {
     val poVUiState by viewModel.poVUiState.collectAsState(initial = PoVUiState.Success())
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember {
@@ -63,7 +62,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                     IconButton(
                         onClick = {
                             coroutineScope.launch {
-                                viewModel.savePoV(poVUiState.poV.asNewPoV())
+                                viewModel.savePoV(poVUiState.newPoV)
                             }
                         },
                         enabled = poVUiState.isEntryValid
@@ -92,7 +91,7 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 onClickBack = {
                     coroutineScope.launch {
-                        viewModel.addEditPoV(poVUiState.poV)
+                        viewModel.editPoV(poVUiState.newPoV)
                         navHostController.navigateUp()
                     }
                 },
@@ -102,12 +101,12 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
             SnackbarHost(hostState = snackBarHostState)
         }
     ) { paddingValues ->
-        PoVAddEditBody(
+        PoVEditBody(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             poVUiState = poVUiState,
-            onValueChange = viewModel::addEditPoVUiState,
+            onValueChange = viewModel::editPoVUiState,
         )
         LaunchedEffect(key1 = errorMessage) {
             if (errorMessage.isNotBlank()) {
@@ -122,10 +121,10 @@ fun PoVAddEditScreen(viewModel: PoVViewModel, navHostController: NavHostControll
 }
 
 @Composable
-fun PoVAddEditBody(
+fun PoVEditBody(
     modifier: Modifier = Modifier,
     poVUiState: PoVUiState.Success,
-    onValueChange: (PoV) -> Unit,
+    onValueChange: (NewPoV) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -135,7 +134,7 @@ fun PoVAddEditBody(
     ) {
         PoVForm(
             modifier = Modifier.fillMaxSize(),
-            poV = poVUiState.poV,
+            newPoV = poVUiState.newPoV,
             onValueChange = onValueChange,
             isError = !poVUiState.isEntryValid
         )
@@ -144,8 +143,8 @@ fun PoVAddEditBody(
 
 @Preview(showBackground = true)
 @Composable
-fun  PoVAddEditScreenPreview() {
+fun PoVEditScreenPreview() {
     PoVTheme {
-//        PoVAddEditScreen(viewModel = hiltViewModel(), navHostController = rememberNavController())
+//        PoVEditScreen(viewModel = hiltViewModel(), navHostController = rememberNavController())
     }
 }

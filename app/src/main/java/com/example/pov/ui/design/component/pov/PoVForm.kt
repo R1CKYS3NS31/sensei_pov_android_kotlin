@@ -9,15 +9,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import com.example.data.data.model.pov.PoV
+import com.example.data.data.model.pov.NewPoV
 import com.example.pov.R
 
 
 @Composable
 fun PoVForm(
     modifier: Modifier = Modifier,
-    poV: PoV,
-    onValueChange: (PoV) -> Unit,
+    newPoV: NewPoV,
+    onValueChange: (NewPoV) -> Unit,
     isError: Boolean
 ) {
     Column(
@@ -32,8 +32,8 @@ fun PoVForm(
         PoVTitle(
             modifier = Modifier
                 .fillMaxWidth(),
-            title = poV.title,
-            onValueChange = { onValueChange(poV.copy(title = it)) },
+            title = newPoV.title,
+            onValueChange = { onValueChange(newPoV.copy(title = it)) },
             isError = isError
         )
         HorizontalDivider()
@@ -41,8 +41,8 @@ fun PoVForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(),
-            points = poV.points,
-            onValueChange = { onValueChange(poV.copy(points = it)) },
+            points = newPoV.points,
+            onValueChange = { onValueChange(newPoV.copy(points = it)) },
             isError = isError,
         )
     }

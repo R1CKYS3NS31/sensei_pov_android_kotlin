@@ -31,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -39,39 +40,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.example.data.data.model.pov.asNewPoV
 import com.example.pov.R
 import com.example.pov.ui.design.component.pov.PoVFab
-import com.example.pov.ui.feature.pov.navigation.navigateToPovAddEdit
-import com.example.pov.ui.feature.pov.screen.PoVAddEditScreen
-import com.example.pov.ui.navigation.main.PoVNavOptions
+import com.example.pov.ui.feature.pov.screen.PoVAddDialog
+import com.example.pov.ui.feature.pov.view_model.PoVUiState
+import com.example.pov.ui.feature.pov.view_model.PoVViewModel
 import com.example.pov.ui.theme.PoVTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(
     navHostController: NavHostController,
-    viewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    poVViewModel: PoVViewModel = hiltViewModel()
 
-    ) {
+) {
     HomeScreen(
-        viewModel = viewModel, navHostController = navHostController
+        homeViewModel = homeViewModel,
+        poVViewModel = poVViewModel,
+        navHostController = navHostController
     )
 }
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
+    poVViewModel: PoVViewModel,
     navHostController: NavHostController,
 ) {
-    val homeUiState by viewModel.homeUiState.collectAsState()
-    val isSyncing by viewModel.isSyncing.collectAsState()
+    val homeUiState by homeViewModel.homeUiState.collectAsState()
+    val poVUiState by poVViewModel.poVUiState.collectAsState(initial = PoVUiState.Success())
+
+    val coroutineScope = rememberCoroutineScope()
+    val isSyncing by homeViewModel.isSyncing.collectAsState()
     val isHomeUiStateLoading = homeUiState is HomeUiState.Loading
-    val errorMessage by viewModel.errorMessage.collectAsState()
+    val errorMessage by homeViewModel.errorMessage.collectAsState()
     val snackBarHostState = remember {
         SnackbarHostState()
     }
@@ -82,20 +90,29 @@ fun HomeScreen(
 
     Scaffold(
         floatingActionButton = {
-        PoVFab(
-            modifier = Modifier, onClickPoVFab = {
-                navHostController.navigateToPovAddEdit(
-                    navOptions = PoVNavOptions.topLevelNavOptionsExclusive(
-                        navHostController.graph.findStartDestination().id
+            PoVFab(
+                modifier = Modifier, onClickPoVFab = {
+                    PoVAddDialog(
+                        modifier = Modifier,
+                        poVUiState = poVUiState,
+                        onValueChange = poVViewModel::addPoVUiState,
+                        onClickSave = {
+                            coroutineScope.launch {
+                                poVViewModel.savePoV(poVUiState.newPoV)
+                            }
+                        },
+                        onClear = {
+                            /* clear */
+                        },
+                        enableSave = poVUiState.isEntryValid
                     )
-                )
-            },
-            icon = Icons.Filled.Add, text = R.string.create_pov
-        )
-    },
-      snackbarHost = {
-          SnackbarHost(hostState = snackBarHostState)
-      }
+                },
+                icon = Icons.Filled.Add, text = R.string.create_pov
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        }
     ) { paddingValues ->
         AnimatedVisibility(
             visible = isSyncing || isHomeUiStateLoading,

@@ -14,7 +14,7 @@ import com.example.pov.R
 @Composable
 fun PoVFab(
     modifier: Modifier = Modifier,
-    onClickPoVFab: () -> Unit = {},
+    onClickPoVFab:  () -> Unit = {},
     icon: ImageVector = Icons.Filled.Add,
     text: Int = R.string.fab
 ) {

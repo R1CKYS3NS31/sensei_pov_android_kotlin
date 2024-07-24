@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.example.pov.ui.feature.pov.screen.PovAddEditRoute
+import com.example.pov.ui.feature.pov.screen.PovEditRoute
 
 const val poVAddEditNavigationRoute = "pov_create_route"
 
@@ -15,6 +15,6 @@ fun NavController.navigateToPovAddEdit(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.poVAddEditScreen(navHostController: NavHostController) {
     composable(route = poVAddEditNavigationRoute) {
-        PovAddEditRoute(navHostController = navHostController)
+        PovEditRoute(navHostController = navHostController)
     }
 }
