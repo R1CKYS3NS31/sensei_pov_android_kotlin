@@ -11,22 +11,22 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface UserAccountApiService {
-    @POST(value = "auth/signup")
+    @POST(value = "account/signup")
     suspend fun signup(
         @Body
         userAccountSignUp: UserAccountSignUpRemoteModel
     ): AuthResponseModel
 
-    @POST(value = "auth/signin")
+    @POST(value = "account/signin")
     suspend fun signIn(
         @Body
         userAccountSignIn: UserAccountSignInRemoteModel
     ): AuthResponseModel
 
-    @GET(value = "auth/account")
+    @GET(value = "account/account")
     suspend fun getUserAccount(): UserAccountRemoteModel
 
-    @PUT(value = "auth/account")
+    @PUT(value = "account/account")
     suspend fun updateUserAccount(
 //        @Path(value = "userId")
 //        userId: String,
@@ -34,9 +34,9 @@ interface UserAccountApiService {
         userAccountRemoteModel: UserAccountRemoteModel
     ): UserAccountRemoteModel
 
-    @DELETE(value = "auth/account")
+    @DELETE(value = "account/account")
     suspend fun deleteUserAccount()
 
-    @GET(value = "auth/signout")
+    @GET(value = "account/signout")
     suspend fun signOut()
 }

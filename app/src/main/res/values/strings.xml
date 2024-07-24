@@ -19,8 +19,8 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="create_account">Create account instead?</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
+    <string name="first_name">First</string>
+    <string name="last_name">Surname</string>
     <string name="error">%</string>
     <string name="loading">Loading…</string>
     <string name="okay">OK</string>

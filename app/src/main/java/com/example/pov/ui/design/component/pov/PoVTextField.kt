@@ -1,5 +1,7 @@
 package com.example.pov.ui.design.component.pov
 
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -9,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.pov.R
 
 @Composable
@@ -38,6 +42,17 @@ fun PoVTitle(
             unfocusedBorderColor = Color.Transparent,
             disabledBorderColor = Color.Transparent,
             errorBorderColor = Color.Transparent,
+        ),
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next,
+            /* imeAction */
+//            imeAction = imeAction,
+            keyboardType = KeyboardType.Text
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                /* call the imeAction */
+                ImeAction.Next
+            }
         ),
         modifier = modifier
     )

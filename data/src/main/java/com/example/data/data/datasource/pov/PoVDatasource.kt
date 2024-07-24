@@ -71,6 +71,7 @@ class PoVDatasource @Inject constructor(
                                         "create PoV error: ${response.responseErrorMessage}",
                                         response.throwable
                                     )
+                                    poVDao.insertPoV(newPoV.asPoV().asEntity())
                                     emit(
                                         PoVResult.Error(
                                             throwable = response.throwable,
@@ -103,12 +104,12 @@ class PoVDatasource @Inject constructor(
             emit(PoVResult.Loading)
             networkMonitor.isOnline.collect { isOnline ->
                 if (isOnline) {
-                    flowOf(poVApiService.updatePoV(newPoV.asPoV().asRemote())).asPoVResult()
+                    flowOf(poVApiService.updatePoV("",newPoV.asPoV().asRemote())).asPoVResult() // check api
                         .map { response ->
                             when (response) {
                                 is PoVResult.Success -> {
                                     val poVRemote = response.data
-                                    poVDao.updatePoV(poVRemote.asPoV().asEntity())
+                                    poVDao.upsertPoV(poVRemote.asPoV().asEntity())
                                     emit(PoVResult.Success(poVRemote.asPoV()))
                                 }
 
@@ -118,6 +119,7 @@ class PoVDatasource @Inject constructor(
                                         "update PoV error: ${response.responseErrorMessage}",
                                         response.throwable
                                     )
+                                    poVDao.upsertPoV(newPoV.asPoV().asEntity())
                                     emit(
                                         PoVResult.Error(
                                             throwable = response.throwable,
@@ -158,12 +160,16 @@ class PoVDatasource @Inject constructor(
                                 emit(PoVResult.Success(povRemoteModels.map(PoVRemoteModel::asPoV)))
                             }
 
-                            is PoVResult.Error -> {
+                            is PoVResult.Error -> { // return local data, if remote error
                                 Log.d(
                                     TAG,
                                     "get PoVs error: ${response.responseErrorMessage}",
                                     response.throwable
                                 )
+                                poVDao.getAllPoVs().map { it.map(PoVEntity::asPoV) }.asPoVResult()
+                                    .collect { povs: PoVResult<List<PoV>> ->
+                                        emit(povs)
+                                    }
                                 emit(
                                     PoVResult.Error(
                                         throwable = response.throwable,
@@ -208,6 +214,9 @@ class PoVDatasource @Inject constructor(
                                     "get PoV error: ${response.responseErrorMessage}",
                                     response.throwable
                                 )
+                                poVDao.getPoV(poVId).map(PoVEntity::asPoV).asPoVResult().collect { poV ->
+                                    emit(poV)
+                                }
                                 emit(
                                     PoVResult.Error(
                                         throwable = response.throwable,
@@ -236,7 +245,7 @@ class PoVDatasource @Inject constructor(
             emit(PoVResult.Loading)
             networkMonitor.isOnline.collect { isOnline ->
                 if (isOnline) {
-                    flowOf(poVApiService.updatePoV(poV.asRemote())).asPoVResult().map { response ->
+                    flowOf(poVApiService.updatePoV(poV.id,poV.asRemote())).asPoVResult().map { response ->
                         when (response) {
                             is PoVResult.Success -> {
                                 val poVRemote = response.data
@@ -250,6 +259,9 @@ class PoVDatasource @Inject constructor(
                                     "update PoV error: ${response.responseErrorMessage}",
                                     response.throwable
                                 )
+                                poVDao.getPoV(poV.id).map { it.asPoV() }.asPoVResult().collect {
+                                    emit(it)
+                                }
                                 emit(
                                     PoVResult.Error(
                                         throwable = response.throwable,
@@ -291,6 +303,7 @@ class PoVDatasource @Inject constructor(
                                     "delete PoV error: ${response.responseErrorMessage}",
                                     response.throwable
                                 )
+                                poVDao.deletePoV(poV.asEntity())
                                 emit(
                                     PoVResult.Error(
                                         throwable = response.throwable,

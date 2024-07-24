@@ -127,7 +127,7 @@ class PoVViewModel @Inject constructor(
                             is PoVResult.Error -> {
                                 Log.d(
                                     TAG,
-                                    "PoV updatePoV error: ${result.responseErrorMessage}",
+                                    "PoV addEditPoV error: ${result.responseErrorMessage}",
                                     result.throwable
                                 )
                                 _errorMessage.emit(
@@ -151,47 +151,6 @@ class PoVViewModel @Inject constructor(
             }
         }
     }
-
-//    init {
-//        viewModelScope.launch {
-//            poVRepository.getAllPoVs().map { result: PoVResult<List<PoV>> ->
-//                when (result) {
-//                    is PoVResult.Success -> {
-//                        _poVUiState.emit(
-//                            PoVUiState.Success(pov = result.data)
-//                        )
-//                    }
-//
-//                    is PoVResult.Error -> {
-//                        Log.d(
-//                            TAG,
-//                            "PoV getAllPoVs error: ${result.responseErrorMessage}",
-//                            result.throwable
-//                        )
-//                        _errorMessage.emit(
-//                            result.responseErrorMessage?.errorMessage ?: ""
-//                        )
-//                        _poVUiState.emit(
-//                            PoVUiState.Error(
-//                                throwable = result.throwable,
-//                                responseErrorMessage = result.responseErrorMessage
-//                            )
-//                        )
-//                    }
-//
-//                    PoVResult.Loading -> {
-//                        _poVUiState.emit(
-//                            PoVUiState.Loading
-//                        )
-//                    }
-//                }
-//            }.stateIn(
-//                scope = viewModelScope,
-//                started = SharingStarted.WhileSubscribed(TIME_IN_MILLIS),
-//                initialValue = PoVResult.Loading
-//            ).collect()
-//        }
-//    }
 
     companion object {
         const val TIME_IN_MILLIS = 5_000L

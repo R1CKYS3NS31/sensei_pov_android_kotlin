@@ -10,7 +10,6 @@ import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -18,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -45,10 +46,13 @@ fun NameTextField(
         placeholder = {
             Text(text = nameTextFieldText)
         },
-        shape = OutlinedTextFieldDefaults.shape,
-//        colors = OutlinedTextFieldDefaults.colors(
-//
-//        ),
+        shape = TextFieldDefaults.shape,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent
+        ),
         isError = isError,
         trailingIcon = @Composable {
             Icon(
@@ -57,11 +61,13 @@ fun NameTextField(
         },
         keyboardOptions = KeyboardOptions.Default.copy(
             /* imeAction */
+            imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Text
         ),
         keyboardActions = KeyboardActions(
             onDone = {
                 /* call the imeAction */
+                ImeAction.Next
             }
         ),
         modifier = modifier
@@ -97,14 +103,21 @@ fun EmailTextField(
                 )
             )
         },
-        colors = TextFieldDefaults.colors(),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent
+        ),
         keyboardOptions = KeyboardOptions.Default.copy(
             /* imeAction */
+            imeAction = ImeAction.Next,
             keyboardType = KeyboardType.Email
         ),
         keyboardActions = KeyboardActions(
             onDone = {
                 /* call the imeAction */
+                ImeAction.Next
             }
         ),
         modifier = modifier
@@ -117,6 +130,7 @@ fun PasswordTextField(
     password: String,
     onValueChange: (String) -> Unit,
     isError: Boolean = false,
+    onDoneImeAction: () -> Unit = {}
 ) {
     val showPassword = rememberSaveable {
         mutableStateOf(false)
@@ -162,16 +176,21 @@ fun PasswordTextField(
         } else {
             PasswordVisualTransformation()
         },
-        colors = TextFieldDefaults.colors(),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            errorContainerColor = Color.Transparent
+        ),
         keyboardOptions = KeyboardOptions.Default.copy(
             /* imeAction */
-//            imeAction = imeAction,
+            imeAction = ImeAction.Done,
             keyboardType = KeyboardType.Password
         ),
         keyboardActions = KeyboardActions(
+            /* call the imeAction */
             onDone = {
-                /* call the imeAction */
-//                onImeAction()
+                onDoneImeAction
             }
         ),
         modifier = modifier,

@@ -25,8 +25,10 @@ interface PoVApiService {
         povId: String
     ): PoVRemoteModel
 
-    @PUT(value = "povs")
+    @PUT(value = "povs/{povId}")
     fun updatePoV(
+        @Path(value = "povId")
+        povId: String,
         @Body
         poVRemoteModel: PoVRemoteModel
     ): PoVRemoteModel
