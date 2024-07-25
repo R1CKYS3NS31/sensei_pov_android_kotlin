@@ -41,10 +41,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.data.data.model.pov.asNewPoV
 import com.example.pov.R
+import com.example.pov.ui.design.component.pov.PoVAddDialog
 import com.example.pov.ui.design.component.pov.PoVFab
-import com.example.pov.ui.feature.pov.screen.PoVAddDialog
 import com.example.pov.ui.feature.pov.view_model.PoVUiState
 import com.example.pov.ui.feature.pov.view_model.PoVViewModel
 import com.example.pov.ui.theme.PoVTheme
@@ -91,7 +90,8 @@ fun HomeScreen(
     Scaffold(
         floatingActionButton = {
             PoVFab(
-                modifier = Modifier, onClickPoVFab = {
+                modifier = Modifier, onClickPoVFab =
+                {
                     PoVAddDialog(
                         modifier = Modifier,
                         poVUiState = poVUiState,
