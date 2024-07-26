@@ -460,7 +460,7 @@ fun AppSettings(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(dimensionResource(id = R.dimen.padding_medium)),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Icon(

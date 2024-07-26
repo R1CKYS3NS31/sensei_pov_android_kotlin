@@ -3,6 +3,7 @@ package com.example.pov.ui.design.component.pov
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -36,11 +37,10 @@ fun PoVForm(
             onValueChange = { onValueChange(newPoV.copy(title = it)) },
             isError = isError
         )
-        HorizontalDivider()
+        HorizontalDivider(modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)))
         PoVPoints(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxSize(),
             points = newPoV.points,
             onValueChange = { onValueChange(newPoV.copy(points = it)) },
             isError = isError,

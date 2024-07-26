@@ -1,30 +1,28 @@
 package com.example.pov.ui.design.component.pov
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 import com.example.data.data.model.pov.NewPoV
 import com.example.pov.R
 import com.example.pov.ui.feature.pov.view_model.PoVUiState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PoVAddDialog(
     modifier: Modifier = Modifier,
@@ -35,58 +33,54 @@ fun PoVAddDialog(
     onClear: () -> Unit = {},
     enableSave: Boolean = false
 ) {
-    Dialog(
+    ModalBottomSheet(
+        modifier = modifier,
         onDismissRequest = { onDismissRequest() },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnBackPress = true,
+        properties = ModalBottomSheetProperties(
+            securePolicy = SecureFlagPolicy.Inherit,
+            isFocusable = true,
+            shouldDismissOnBackPress = true
         ),
     ) {
-        Surface(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ){
-                PoVForm(
-                    modifier = Modifier.fillMaxSize(),
-                    newPoV = poVUiState.newPoV,
-                    onValueChange = onValueChange,
-                    isError = !poVUiState.isEntryValid
+            Button(
+                modifier = Modifier,
+                onClick = onClear,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Cancel,
+                    contentDescription = stringResource(id = R.string.cancel)
                 )
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_extra_small)),
+                )
+            }
 
-                ElevatedCard(
-                    modifier = modifier,
-                    shape = MaterialTheme.shapes.extraLarge
-                ) {
-                    Row {
-                        IconButton(
-                            onClick = onClear,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Cancel,
-                                contentDescription = stringResource(id = R.string.cancel)
-                            )
-                            Text(text = stringResource(id = R.string.cancel))
-                        }
-
-                        IconButton(
-                            onClick = onClickSave,
-                            enabled = enableSave
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Save,
-                                contentDescription = stringResource(id = R.string.savePoV)
-                            )
-                            Text(text = stringResource(id = R.string.savePoV))
-                        }
-                    }
-                }
+            Button(
+                onClick = onClickSave,
+                enabled = enableSave
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Save,
+                    contentDescription = stringResource(id = R.string.savePoV)
+                )
+                Text(
+                    text = stringResource(id = R.string.savePoV),
+                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_extra_small)),
+                )
             }
         }
+        PoVForm(
+            modifier = Modifier.fillMaxWidth(),
+            newPoV = poVUiState.newPoV,
+            onValueChange = onValueChange,
+            isError = !poVUiState.isEntryValid
+        )
     }
 }
