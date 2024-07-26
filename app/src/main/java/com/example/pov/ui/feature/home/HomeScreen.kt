@@ -30,8 +30,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -82,6 +85,9 @@ fun HomeScreen(
     val snackBarHostState = remember {
         SnackbarHostState()
     }
+    var showPoVAddDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     ReportDrawnWhen {
         !isSyncing && !isHomeUiStateLoading
@@ -90,22 +96,8 @@ fun HomeScreen(
     Scaffold(
         floatingActionButton = {
             PoVFab(
-                modifier = Modifier, onClickPoVFab =
-                {
-                    PoVAddDialog(
-                        modifier = Modifier,
-                        poVUiState = poVUiState,
-                        onValueChange = poVViewModel::addPoVUiState,
-                        onClickSave = {
-                            coroutineScope.launch {
-                                poVViewModel.savePoV(poVUiState.newPoV)
-                            }
-                        },
-                        onClear = {
-                            /* clear */
-                        },
-                        enableSave = poVUiState.isEntryValid
-                    )
+                modifier = Modifier, onClickPoVFab = {
+                    showPoVAddDialog = true
                 },
                 icon = Icons.Filled.Add, text = R.string.create_pov
             )
@@ -138,6 +130,24 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(paddingValues), homeUiState = homeUiState
         )
+        if (showPoVAddDialog) {
+            PoVAddDialog(
+                modifier = Modifier,
+                poVUiState = poVUiState,
+                onValueChange = poVViewModel::addPoVUiState,
+                onClickSave = {
+                    coroutineScope.launch {
+                        poVViewModel.savePoV(poVUiState.newPoV)
+                    }
+                },
+                onDismissRequest = { showPoVAddDialog = false },
+                onClear = {
+                    /* clear */
+                },
+                enableSave = poVUiState.isEntryValid
+            )
+        }
+
 
         LaunchedEffect(key1 = errorMessage) {
             if (errorMessage.isNotEmpty()) {
