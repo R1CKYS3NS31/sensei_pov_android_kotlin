@@ -14,6 +14,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalBottomSheetProperties
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +47,8 @@ fun PoVAddDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Top
         ) {
             Button(
                 modifier = Modifier,
@@ -57,7 +59,7 @@ fun PoVAddDialog(
                     contentDescription = stringResource(id = R.string.cancel)
                 )
                 Text(
-                    text = stringResource(id = R.string.cancel),
+                    text = stringResource(id = R.string.clear),
                     modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_extra_small)),
                 )
             }
