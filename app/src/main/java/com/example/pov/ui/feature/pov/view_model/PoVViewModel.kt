@@ -159,7 +159,7 @@ class PoVViewModel @Inject constructor(
 sealed interface PoVUiState {
     data object Loading : PoVUiState
     data class Success(
-        val newPoV: NewPoV = NewPoV(author = ""),
+        val newPoV: NewPoV = NewPoV(),
         val isEntryValid: Boolean = false
     ) : PoVUiState
 

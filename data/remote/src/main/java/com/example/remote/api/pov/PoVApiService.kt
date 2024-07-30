@@ -17,16 +17,16 @@ interface PoVApiService {
     ): PoVRemoteModel
 
     @GET(value = "povs")
-    fun readPoVs(): List<PoVRemoteModel>
+   suspend fun readPoVs(): List<PoVRemoteModel>
 
     @GET(value = "povs/{povId}")
-    fun readPoV(
+   suspend fun readPoV(
         @Path(value = "povId")
         povId: String
     ): PoVRemoteModel
 
     @PUT(value = "povs/{povId}")
-    fun updatePoV(
+   suspend fun updatePoV(
         @Path(value = "povId")
         povId: String,
         @Body

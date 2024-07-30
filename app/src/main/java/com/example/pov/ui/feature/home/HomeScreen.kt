@@ -178,7 +178,6 @@ fun HomeBody(modifier: Modifier = Modifier, homeUiState: HomeUiState) {
             text = stringResource(id = R.string.home),
             style = MaterialTheme.typography.headlineSmall
         )
-
         LazyVerticalGrid(
             columns = GridCells.Adaptive(200.dp),
             state = state,

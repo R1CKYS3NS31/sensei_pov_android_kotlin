@@ -9,17 +9,16 @@ data class PoVRemoteModel(
     val id: String,
     val title: String,
     val points: String,
-    val attachment: String? = null,
+    val attachment: List<String> = emptyList(),
     val author: String,
     val createdAt: String,
     val updatedAt: String
 )
 
-
 @Serializable
 data class NewPoVRemoteModel(
     val title: String,
     val points: String,
-    val attachment: String? = null,
+    val attachment: List<String> = emptyList(),
     val author: String
 )

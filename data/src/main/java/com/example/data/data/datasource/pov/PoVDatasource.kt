@@ -182,9 +182,7 @@ class PoVDatasource @Inject constructor(
                             emit(povs)
                         }
                 }
-
             }
-
         }.catch {
             emit(it.asPoVError())
         }.flowOn(dispatcher)
