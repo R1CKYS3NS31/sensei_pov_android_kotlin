@@ -60,7 +60,8 @@ import kotlinx.coroutines.launch
 fun HomeRoute(
     navHostController: NavHostController,
     homeViewModel: HomeViewModel = hiltViewModel(),
-    poVViewModel: PoVViewModel = hiltViewModel()
+    poVViewModel: PoVViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean // todo: undo delete
 
 ) {
     HomeScreen(

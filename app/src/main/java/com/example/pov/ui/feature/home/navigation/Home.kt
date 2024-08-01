@@ -13,8 +13,11 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
     this.navigate(route = homeNavigationRoute, navOptions = navOptions)
 }
 
-fun NavGraphBuilder.homeScreen(navHostController: NavHostController) {
+fun NavGraphBuilder.homeScreen(
+    navHostController: NavHostController,
+    onShowSnackbar: suspend (String, String?) -> Boolean
+) {
     composable(route = homeNavigationRoute) {
-        HomeRoute(navHostController = navHostController) // from the feature screen
+        HomeRoute(navHostController = navHostController, onShowSnackbar = onShowSnackbar) // from the feature screen
     }
 }

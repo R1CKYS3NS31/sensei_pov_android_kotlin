@@ -36,7 +36,7 @@ fun MainNavHost(
         signInScreen(navHostController)
         signUpScreen(navHostController)
 
-        homeScreen(navHostController)
+        homeScreen(navHostController, onShowSnackbar =onShowSnackbar)
         catalogScreen(navHostController)
         profileScreen(navHostController)
         editProfileScreen(navHostController)
