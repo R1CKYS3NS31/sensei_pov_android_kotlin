@@ -24,7 +24,10 @@ fun NavController.navigateToApp(navOptions: NavOptions? = null) {
 }
 
 @Composable
-fun MainNavHost(navHostController: NavHostController) {
+fun MainNavHost(
+    navHostController: NavHostController,
+    onShowSnackbar: suspend (String, String?) -> Boolean
+) {
     NavHost(
         navController = navHostController,
         startDestination = homeNavigationRoute,

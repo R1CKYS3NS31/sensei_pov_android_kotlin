@@ -56,6 +56,7 @@ internal class AppState(
             /* more top level destinations */
             else -> null
         }
+
     val topLevelDestinations: List<TopLevelDestination> =
         TopLevelDestination.entries
 
