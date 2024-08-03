@@ -332,6 +332,10 @@ class PoVDatasource @Inject constructor(
             localData = poVDao.getAllPoVs().first().map(PoVEntity::asPoV).toSet(),
             localModelUpdater = {
                 poVDao.upsertPoV(it.asEntity())
-            })
+            },
+            remoteModelUpdater = {
+                poVApiService.updatePoV("", it.asRemote())
+            }
+        )
     }
 }

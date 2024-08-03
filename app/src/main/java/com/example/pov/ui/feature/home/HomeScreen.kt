@@ -10,7 +10,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -46,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.data.data.model.pov.NewPoV
 import com.example.pov.R
+import com.example.pov.ui.design.component.home.OverlayLoadingWheel
 import com.example.pov.ui.design.component.pov.PoVAddDialog
 import com.example.pov.ui.design.component.pov.PoVFab
 import com.example.pov.ui.feature.pov.view_model.PoVUiState
@@ -119,11 +118,15 @@ fun HomeScreen(
                     .fillMaxSize()
                     .padding(top = 8.dp)
             ) {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter)
+                OverlayLoadingWheel(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    contentDesc = loadingContentDescription
                 )
+//                LinearProgressIndicator(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .align(Alignment.TopCenter),
+//                )
             }
         }
         NotificationPermissionEffect()
