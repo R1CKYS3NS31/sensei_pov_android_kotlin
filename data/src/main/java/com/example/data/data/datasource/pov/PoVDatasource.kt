@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 const val TAG = "PoVDatasource"
 
-class PoVDatasource @Inject constructor(
+internal class PoVDatasource @Inject constructor(
     private val poVDao: PoVDao, // local source
     private val poVApiService: PoVApiService, // remote source
     @Dispatcher(PoVDispatchers.IO) private val dispatcher: CoroutineDispatcher,

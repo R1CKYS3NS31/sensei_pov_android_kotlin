@@ -21,6 +21,14 @@ interface PoVDao {
     @Query("select * from pov")
     fun getAllPoVs(): Flow<List<PoVEntity>>
 
+    @Query(
+        value = """
+        SELECT * FROM pov
+        WHERE id IN (:ids)
+    """,
+    )
+    fun  getPoVs(ids:Set<String>):Flow<List<PoVEntity>>
+
     @Query("select * from pov where id =:id")
     fun getPoV(id: String): Flow<PoVEntity>
 

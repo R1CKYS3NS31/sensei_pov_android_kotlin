@@ -4,16 +4,19 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.local.dao.account.UserAccountDao
 import com.example.local.dao.pov.PoVDao
+import com.example.local.dao.pov.PoVFtsDao
 import com.example.local.dao.user.UserDao
 import com.example.local.entity.account.UserAccountEntity
 import com.example.local.entity.pov.PoVEntity
+import com.example.local.entity.pov.PoVFtsEntity
 import com.example.local.entity.user.UserEntity
 
 @Database(
     entities = [
         UserAccountEntity::class,
         UserEntity::class,
-        PoVEntity::class
+        PoVEntity::class,
+        PoVFtsEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -25,4 +28,5 @@ internal abstract class PoVDatabase : RoomDatabase() {
     abstract fun userAccountDao(): UserAccountDao
     abstract fun userDao(): UserDao
     abstract fun povDao(): PoVDao
+    abstract fun povFtsDao(): PoVFtsDao
 }
