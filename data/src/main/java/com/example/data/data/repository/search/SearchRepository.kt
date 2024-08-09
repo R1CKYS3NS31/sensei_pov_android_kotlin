@@ -5,6 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
     suspend fun populateFtsData()
-    fun search(searchQuery: String): Flow<SearchResult>
+    suspend fun search(searchQuery: String): Flow<SearchResult>
     fun getSearchCount(): Flow<Int>
 }

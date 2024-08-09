@@ -10,7 +10,7 @@ data class PoVEntity(
     @PrimaryKey
     val title: String,
     val points: String,
-    val attachment: String,
+    val attachment: List<String>,
     val author: String,
     val createdAt: String,
     val updatedAt: String

@@ -11,11 +11,11 @@ import com.example.local.entity.pov.PoVEntity
 import com.example.local.entity.pov.asFtsEntity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -35,19 +35,17 @@ internal class SearchDatasource @Inject constructor(
         }
     }
 
-    override fun search(searchQuery: String): Flow<SearchResult> {
+    override suspend fun search(searchQuery: String): Flow<SearchResult> {
         val povIds = poVFtsDao.searchAllPoVs("*$searchQuery*")
 
-        val poVFlow = povIds.mapLatest {
-            it.toSet()
-        }.distinctUntilChanged()
-            .flatMapLatest(PoVDao::getPoVs)
+        val poVFlow = povIds
+            .mapLatest { it.toSet() }
+            .distinctUntilChanged()
+            .flatMapLatest {
+                poVDao.getPoVs(it)
+            }
 
-//        return combine(poVFlow){ poVs ->
-//            SearchResult(povs = poVs.map{
-//                it
-//            }
-//        }
+        return flowOf(SearchResult(povs = poVFlow.first().map(PoVEntity::asPoV)))
     }
 
     override fun getSearchCount(): Flow<Int> =

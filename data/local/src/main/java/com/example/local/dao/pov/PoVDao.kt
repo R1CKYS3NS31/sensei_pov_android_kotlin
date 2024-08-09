@@ -27,7 +27,7 @@ interface PoVDao {
         WHERE id IN (:ids)
     """,
     )
-    fun  getPoVs(ids:Set<String>):Flow<List<PoVEntity>>
+    fun getPoVs(ids: Set<String>): Flow<List<PoVEntity>>
 
     @Query("select * from pov where id =:id")
     fun getPoV(id: String): Flow<PoVEntity>
@@ -37,4 +37,12 @@ interface PoVDao {
 
     @Delete
     suspend fun deletePoV(poVEntity: PoVEntity)
+
+    @Query(
+        value = """
+        delete from pov
+        where id in (:ids)
+        """
+    )
+    suspend fun deleteTopics(ids: Set<String>)
 }

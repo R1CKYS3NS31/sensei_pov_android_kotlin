@@ -10,7 +10,7 @@ data class PoV(
     val id: String = "",
     val title: String = "",
     val points: String = "",
-    val attachment: String = "",
+    val attachment: List<String> = emptyList(),
     val author: String = "", // userId
     val createdAt: String = LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")),
@@ -21,7 +21,7 @@ data class PoV(
 data class NewPoV(
     val title: String = "",
     val points: String = "",
-    val attachment: String = "",
+    val attachment: List<String> = emptyList(),
     val author: String = ""
 )
 
